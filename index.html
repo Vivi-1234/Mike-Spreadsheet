@@ -29,7 +29,7 @@
             color: var(--text-primary);
             overflow-x: hidden;
         }
-        
+        /* New Animated Particle Background */
         #particle-canvas {
             position: fixed;
             top: 0;
@@ -280,8 +280,8 @@
 
     <script type="module">
         // --- Configuration ---
-        const SUPABASE_URL = 'https://rjibdcqfehcwclfdgbko.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqaWJkY3FmZWhjd2NsZmRnYmtvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2Mzg2NTEsImV4cCI6MjA2NzIxNDY1MX0.WhU0cnssFtuWnL3-eDNmsHJNESC6h-T79bJg5YAFb4A';
+        const SUPABASE_URL = 'https://pyswwuldxsqihvlhzvgn.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5c3d3dWxkeHNxaWh2bGh6dmduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE2NDIxODIsImV4cCI6MjA2NzIxODE4Mn0.H2WMU68WAy9IDhbfMyspXOv7fRxZY_RJbMf0OO9-V_c';
         
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -805,7 +805,7 @@
 
             function setupCanvas() {
                 canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+                canvas.height = document.body.scrollHeight; // Match body height
             }
 
             class Particle {
@@ -874,12 +874,14 @@
             initParticles();
             animateParticles();
 
+            // Use a timeout to resize canvas after content has loaded and pushed body height
+            setTimeout(setupCanvas, 1000);
+
             window.addEventListener('resize', () => {
                 setupCanvas();
                 initParticles();
             });
         }
-
 
         document.addEventListener('DOMContentLoaded', () => {
             loadInitialData();
