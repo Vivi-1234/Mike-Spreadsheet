@@ -584,12 +584,12 @@
                 const mainNavContainer = document.getElementById('main-nav');
                 const mobileNavContent = document.getElementById('mobile-nav-content');
                 if (mainNavContainer && mobileNavContent) {
-                    const brandDropdownItemsHTML = brandsCache.map(brand => `<a href="/?brand=${brand.id}" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">${brand.name}</a>`).join('');
-                    const allBrandsLinkHTML = `<a href="/" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">All Brands</a>`;
+                    const brandDropdownItemsHTML = brandsCache.map(brand => `<a href="/?brand=${brand.id}" data-brandid="${brand.id}" data-brandname="${brand.name}" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">${brand.name}</a>`).join('');
+                    const allBrandsLinkHTML = `<a href="/" data-brandid="all" data-brandname="All Brands" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">All Brands</a>`;
                     const desktopDropdownHTML = `
                         <div class="relative nav-link" id="brands-dropdown">
                             <button id="brands-btn" class="flex items-center">
-                                Brands <i data-lucide="chevron-down" class="h-4 w-4 ml-1"></i>
+                                <span id="brands-btn-text">Brands</span> <i data-lucide="chevron-down" class="h-4 w-4 ml-1"></i>
                             </button>
                             <div id="brands-menu" class="absolute right-0 mt-4 w-56 bg-bg-surface rounded-lg shadow-lg z-50 ring-1 ring-black ring-opacity-5 p-2 space-y-1">
                                 ${allBrandsLinkHTML}
@@ -598,12 +598,12 @@
                         </div>`;
                     mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a>${desktopDropdownHTML}<a href="/how-to-buy" class="nav-link">How-to-buy</a>`;
                     
-                    const mobileBrandDropdownItemsHTML = brandsCache.map(brand => `<a href="/?brand=${brand.id}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
-                    const mobileAllBrandsLinkHTML = `<a href="/" class="block py-2 text-lg text-text-secondary hover:text-white">All Brands</a>`;
+                    const mobileBrandDropdownItemsHTML = brandsCache.map(brand => `<a href="/?brand=${brand.id}" data-brandid="${brand.id}" data-brandname="${brand.name}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
+                    const mobileAllBrandsLinkHTML = `<a href="/" data-brandid="all" data-brandname="All Brands" class="block py-2 text-lg text-text-secondary hover:text-white">All Brands</a>`;
                     const mobileDropdownHTML = `
                         <div class="relative w-full">
                             <button id="mobile-brands-btn" class="nav-link text-lg font-medium flex justify-between items-center w-full">
-                                Brands <i data-lucide="chevron-down" class="h-5 w-5"></i>
+                                <span id="mobile-brands-btn-text">Brands</span> <i data-lucide="chevron-down" class="h-5 w-5"></i>
                             </button>
                             <div id="mobile-brands-menu" class="hidden mt-2 pl-4 space-y-2">
                                 ${mobileAllBrandsLinkHTML}
@@ -680,6 +680,26 @@
 
                 if (isBrandsDropdown) {
                     if (currentBrandFilter !== 'all') link.classList.add('nav-link-active');
+
+            // Update button text if a brand is selected
+            const brandBtnText = document.getElementById('brands-btn-text');
+            const mobileBrandBtnText = document.getElementById('mobile-brands-btn-text');
+            if (brandBtnText && mobileBrandBtnText) {
+                if (currentBrandFilter !== 'all' && brandsCache.length > 0) {
+                    const selectedBrand = brandsCache.find(b => b.id == currentBrandFilter);
+                    if (selectedBrand) {
+                        brandBtnText.textContent = selectedBrand.name;
+                        mobileBrandBtnText.textContent = selectedBrand.name;
+                    } else {
+                        brandBtnText.textContent = 'Brands';
+                        mobileBrandBtnText.textContent = 'Brands';
+                    }
+                } else {
+                    brandBtnText.textContent = 'Brands';
+                    mobileBrandBtnText.textContent = 'Brands';
+                }
+            }
+
                 } else if (isHome) {
                     if (currentBrandFilter === 'all' && currentCategoryFilter === 'all' && !currentSearchQuery) {
                         link.classList.add('nav-link-active');
@@ -781,18 +801,43 @@
                 updateURL();
             };
 
-            const setupMenuActions = (menuId) => {
-                 document.getElementById(menuId)?.addEventListener('click', e => {
+            const setupMenuActions = (menuId, isMobile = false) => {
+                const menu = document.getElementById(menuId);
+                menu?.addEventListener('click', e => {
                     const link = e.target.closest('a');
                     if (link && link.dataset.brandid) {
-                        e.preventDefault();
-                        window.location.href = link.href;
+                        e.preventDefault(); // Prevent default navigation
+                        const brandId = link.dataset.brandid;
+                        const brandName = link.dataset.brandname;
+
+                        currentPage = 1;
+                        allProductsLoaded = false;
+                        currentSearchQuery = '';
+                        document.getElementById('search-input').value = '';
+                        currentCategoryFilter = 'all';
+                        currentBrandFilter = brandId === 'all' ? 'all' : parseInt(brandId);
+
+                        const btnTextEl = document.getElementById(isMobile ? 'mobile-brands-btn-text' : 'brands-btn-text');
+                        if (btnTextEl) {
+                            btnTextEl.textContent = brandName;
+                        }
+
+                        fetchProductsPage(1);
+                        updateActiveUI();
+                        updateURL();
+
+                        // Close dropdown
+                        if (isMobile) {
+                            document.getElementById('mobile-brands-menu').classList.toggle('hidden');
+                        } else {
+                            document.getElementById('brands-menu').classList.remove('show');
+                        }
                     }
                 });
             }
 
-            setupMenuActions('brands-menu');
-            setupMenuActions('mobile-brands-menu');
+            setupMenuActions('brands-menu', false);
+            setupMenuActions('mobile-brands-menu', true);
 
             const searchInput = document.getElementById('search-input');
             const debouncedSearch = debounce((query) => {
