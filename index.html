@@ -159,10 +159,10 @@
         }
 
         .product-title {
-            height: 3rem; /* Reserve space for 2 lines (1.5rem per line) */
+            height: 3rem; 
             line-height: 1.5rem; 
             display: -webkit-box;
-            -webkit-line-clamp: 2; /* Clamp to 2 lines */
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -291,7 +291,6 @@
                 <div id="category-filter-container" class="flex flex-wrap items-center justify-center gap-2 md:gap-3">
                 </div>
             </div>
-            <!-- KEY FIX: Removed min-h-[500px] to prevent stretching -->
             <div id="product-list-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
             <div id="loading-indicator">
                 <div class="w-8 h-8 border-4 border-gray-600 border-t-white rounded-full animate-spin"></div>
@@ -596,7 +595,7 @@
                                 ${brandDropdownItemsHTML}
                             </div>
                         </div>`;
-                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a>${desktopDropdownHTML}<a href="/how-to-buy.html" class="nav-link">How-to-buy</a>`;
+                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a>${desktopDropdownHTML}<a href="/how-to-buy" class="nav-link">How-to-buy</a>`;
                     
                     const mobileBrandDropdownItemsHTML = brandsCache.map(brand => `<a href="/?brand=${brand.id}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
                     const mobileAllBrandsLinkHTML = `<a href="/" class="block py-2 text-lg text-text-secondary hover:text-white">All Brands</a>`;
@@ -610,7 +609,7 @@
                                 ${mobileBrandDropdownItemsHTML}
                             </div>
                         </div>`;
-                    mobileNavContent.innerHTML = `<a href="/" class="nav-link text-lg font-medium">Home</a>${mobileDropdownHTML}<a href="/how-to-buy.html" class="nav-link text-lg font-medium">How-to-buy</a>`;
+                    mobileNavContent.innerHTML = `<a href="/" class="nav-link text-lg font-medium">Home</a>${mobileDropdownHTML}<a href="/how-to-buy" class="nav-link text-lg font-medium">How-to-buy</a>`;
                 }
                 
                 const socialSidebar = document.getElementById('social-sidebar');
