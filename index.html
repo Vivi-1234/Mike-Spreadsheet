@@ -777,6 +777,22 @@
             }, 500);
 
             searchInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
+            
+            const categoryContainer = document.getElementById('category-filter-container');
+            categoryContainer?.addEventListener('click', e => {
+                const button = e.target.closest('.filter-btn');
+                if (button) {
+                    currentPage = 1;
+                    allProductsLoaded = false;
+                    currentCategoryFilter = button.dataset.category;
+                    currentSearchQuery = ''; 
+                    document.getElementById('search-input').value = '';
+                    
+                    fetchProductsPage(1); 
+                    updateActiveUI();
+                    updateURL();
+                }
+            });
         }
         
         function setupAnimations() {
