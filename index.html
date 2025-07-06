@@ -202,11 +202,29 @@
             transform: translateY(0);
             pointer-events: auto;
         }
+        .social-sidebar-icon {
+            display: block;
+            width: 48px;
+            height: 48px;
+            transition: transform 0.3s ease;
+        }
+        .social-sidebar-icon:hover {
+            transform: scale(1.1);
+        }
+        .social-sidebar-icon img {
+            width: 100%;
+            height: 100%;
+            border-radius: 9999px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
 
     </style>
 </head>
 <body class="antialiased">
     
+    <div id="social-sidebar" class="fixed right-4 top-1/2 -translate-y-1/2 z-40 flex-col items-center space-y-4 hidden md:flex"></div>
+
     <header class="header sticky top-0 z-30">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
@@ -520,6 +538,12 @@
             if (lastProduct) scrollObserver.observe(lastProduct);
         }
 
+        function formatUrl(url) {
+            if (!url) return '#';
+            if (url.startsWith('http://') || url.startsWith('https://')) return url;
+            return `https://${url}`;
+        }
+
         async function loadInitialData() {
             try {
                 try {
@@ -590,6 +614,16 @@
                     mobileNavContent.innerHTML = `<a href="/" class="nav-link active text-lg font-medium">Home</a>${mobileDropdownHTML}<a href="/how-to-buy" class="nav-link text-lg font-medium">How-to-buy</a>`;
                 }
                 
+                const socialSidebar = document.getElementById('social-sidebar');
+                if (socialLinks.length > 0) {
+                    let sidebarHTML = socialLinks.map(link => {
+                        const iconImage = `<img src="${link.icon_url}" alt="${link.platform_name} logo" class="w-full h-full object-cover rounded-full">`;
+                        let finalUrl = formatUrl(link.link_url);
+                        return `<a href="${finalUrl}" target="_blank" class="social-sidebar-icon" title="${link.platform_name}">${iconImage}</a>`;
+                    });
+                    if (socialSidebar) socialSidebar.innerHTML = sidebarHTML.join('');
+                }
+
                 const socialFooter = document.getElementById('social-footer-container');
                 if (socialLinks.length > 0) {
                     let footerHTML = '';
@@ -701,6 +735,35 @@
                 lucide.createIcons();
             });
 
+            const handleBrandClick = (brandId) => {
+                currentPage = 1;
+                allProductsLoaded = false;
+                currentBrandFilter = brandId;
+                currentCategoryFilter = 'all';
+                currentSearchQuery = '';
+                document.getElementById('search-input').value = '';
+
+                fetchProductsPage(1); 
+                updateActiveUI();
+                updateURL();
+            };
+
+            const setupMenuActions = (menuId) => {
+                 document.getElementById(menuId)?.addEventListener('click', e => {
+                    const link = e.target.closest('a');
+                    if (link) {
+                        e.preventDefault();
+                        const brandId = link.dataset.brandid;
+                        handleBrandClick(brandId);
+                        document.getElementById('brands-menu')?.classList.remove('show');
+                        toggleMobileMenu(false);
+                    }
+                });
+            }
+
+            setupMenuActions('brands-menu');
+            setupMenuActions('mobile-brands-menu');
+
             const searchInput = document.getElementById('search-input');
             const debouncedSearch = debounce((query) => {
                 currentPage = 1;
@@ -742,8 +805,10 @@
             }
         }
         
-        loadInitialData();
-        initGeoAndLog();
+        document.addEventListener('DOMContentLoaded', () => {
+            loadInitialData();
+            initGeoAndLog();
+        });
     </script>
 </body>
 </html>
