@@ -785,11 +785,11 @@
             button.disabled = true; button.innerHTML = '<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>';
             
             const updates = {
-                id: 1,
                 site_title: document.getElementById('siteTitle').value,
                 site_subtitle: document.getElementById('siteSubtitle').value,
             };
-            const { error } = await db.from('settings').upsert(updates);
+            // KEY FIX: Changed from .upsert() to .update() to avoid RLS violation on insert.
+            const { error } = await db.from('settings').update(updates).eq('id', 1);
             if (error) showAlert('Save failed: ' + error.message, true);
             else showAlert('Site settings saved!');
             
@@ -1048,10 +1048,15 @@
         async function saveFlashSaleData() {
             showLoading(true);
             const endTimeValue = document.getElementById('flash-sale-end-time').value;
-            const settingsUpdate = { id: 1, is_active: document.getElementById('flash-sale-active-toggle').checked, end_time: endTimeValue ? new Date(endTimeValue).toISOString() : null, updated_at: new Date().toISOString() };
+            const settingsUpdate = { 
+                is_active: document.getElementById('flash-sale-active-toggle').checked, 
+                end_time: endTimeValue ? new Date(endTimeValue).toISOString() : null, 
+                updated_at: new Date().toISOString() 
+            };
             const selectedProductIds = Array.from(document.getElementById('flash-sale-products-list').children).map((el, index) => ({ product_id: parseInt(el.dataset.id), display_order: index }));
             try {
-                await db.from('flash_sale_settings').upsert(settingsUpdate);
+                // KEY FIX: Changed from .upsert() to .update() to avoid RLS violation on insert.
+                await db.from('flash_sale_settings').update(settingsUpdate).eq('id', 1);
                 await db.from('flash_sale_products').delete().neq('id', 0);
                 if(selectedProductIds.length > 0) {
                     const { error } = await db.from('flash_sale_products').insert(selectedProductIds);
