@@ -31,27 +31,29 @@
             overflow-x: hidden;
             position: relative;
         }
-        /* New Animated Gradient Background */
+        /* New Breathing Aurora Background */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 50%;
+            left: 50%;
+            width: 120vw;
+            height: 120vh;
             z-index: -1;
-            background: 
-                radial-gradient(circle at 15% 25%, rgba(239, 68, 68, 0.12), transparent 40%),
-                radial-gradient(circle at 85% 75%, rgba(255, 255, 255, 0.08), transparent 40%);
-            animation: move-glow 20s infinite alternate ease-in-out;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.09) 0%, transparent 60%);
+            transform: translate(-50%, -50%);
+            animation: breathe 15s infinite alternate ease-in-out;
+            will-change: transform, opacity;
         }
 
-        @keyframes move-glow {
+        @keyframes breathe {
             from {
-                transform: rotate(0deg) scale(1.5);
+                opacity: 0.7;
+                transform: translate(-50%, -50%) scale(0.9);
             }
             to {
-                transform: rotate(360deg) scale(1.0);
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
             }
         }
 
