@@ -30,7 +30,6 @@
             overflow-x: hidden;
             position: relative;
         }
-        /* Breathing Aurora Background */
         body::before {
             content: '';
             position: fixed;
@@ -160,9 +159,10 @@
         }
 
         .product-title {
+            height: 3rem; /* Reserve space for 2 lines (1.5rem per line) */
             line-height: 1.5rem; 
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 2; /* Clamp to 2 lines */
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -282,16 +282,17 @@
                     </div>
                     <div id="countdown-timer" class="flex items-baseline justify-center gap-3 sm:gap-6 flex-nowrap"></div>
                 </div>
-                <div id="flash-sale-product-list" class="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"></div>
+                <div id="flash-sale-product-list" class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"></div>
             </div>
         </section>
 
         <section id="product-section" class="pt-4 md:pt-6 fade-in-up">
             <div class="mb-8">
                 <div id="category-filter-container" class="flex flex-wrap items-center justify-center gap-2 md:gap-3">
-                    </div>
+                </div>
             </div>
-            <div id="product-list-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 min-h-[500px]"></div>
+            <!-- KEY FIX: Removed min-h-[500px] to prevent stretching -->
+            <div id="product-list-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"></div>
             <div id="loading-indicator">
                 <div class="w-8 h-8 border-4 border-gray-600 border-t-white rounded-full animate-spin"></div>
             </div>
@@ -305,7 +306,7 @@
                 <p class="font-bold text-lg">Mike's Spreadsheet</p>
                 <p class="text-sm text-text-secondary mt-2 max-w-md mx-auto">shamuckfinds.com does not sell any physical products and neither does Mulebuy.</p>
                 <div id="social-footer-container" class="flex justify-center items-center space-x-4 mt-6">
-                    </div>
+                </div>
             </div>
             <div class="mt-10 pt-8 border-t border-border-color text-center text-xs text-gray-500">
                 <p>&copy; 2025 Mike's Spreadsheet. All Rights Reserved.</p>
@@ -448,18 +449,16 @@
                 const optimizedImageUrl = getOptimizedImageUrl(p.image_url, { width: 400, height: 400, quality: 75 });
 
                 return `
-                    <a href="${appendRefParam(p.target_url)}" target="_blank" data-product-name="${p.name}" class="group flex flex-col product-card relative">
-                        <div class="img-wrapper">
-                            <img src="${optimizedImageUrl}" alt="${p.name}" loading="lazy">
+                    <a href="${appendRefParam(p.target_url)}" target="_blank" data-product-name="${p.name}" class="group block product-card relative">
+                        <div class="img-wrapper relative">
+                            <img src="${optimizedImageUrl}" alt="${p.name}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/400x400/303030/B0B0B0?text=NO+IMAGE';">
+                            ${discountBadgeHTML}
+                            ${tagBadgeHTML}
                         </div>
-                        <div class="p-4 flex flex-col flex-grow">
-                            <div class="flex-grow">
-                               <h3 class="product-title font-semibold text-text-primary group-hover:text-white transition-colors">${p.name}</h3>
-                            </div>
+                        <div class="p-4">
+                            <h3 class="product-title font-semibold text-text-primary group-hover:text-white transition-colors">${p.name}</h3>
                             ${priceHTML}
                         </div>
-                        ${discountBadgeHTML}
-                        ${tagBadgeHTML}
                     </a>`;
             }).join('');
 
@@ -566,7 +565,7 @@
                 const flashSaleSettings = flashSaleSettingsRes.data;
 
                 if (flashSaleSettings?.is_active && flashSaleSettings.end_time) {
-                    const { data: flashSaleProductsData } = await db.from('flash_sale_products').select('*, products(*)').order('display_order');
+                    const { data: flashSaleProductsData } = await db.from('flash_sale_products').select('*, products(*, brands(name))').order('display_order');
                     const flashSaleProducts = (flashSaleProductsData || []).map(item => item.products).filter(Boolean);
                     const endTime = new Date(flashSaleSettings.end_time);
                     if (endTime > new Date()) {
@@ -585,8 +584,8 @@
                 const mainNavContainer = document.getElementById('main-nav');
                 const mobileNavContent = document.getElementById('mobile-nav-content');
                 if (mainNavContainer && mobileNavContent) {
-                    const brandDropdownItemsHTML = brandsCache.map(brand => `<a href="#" data-brandid="${brand.id}" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">${brand.name}</a>`).join('');
-                    const allBrandsLinkHTML = `<a href="#" data-brandid="all" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">All Brands</a>`;
+                    const brandDropdownItemsHTML = brandsCache.map(brand => `<a href="/?brand=${brand.id}" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">${brand.name}</a>`).join('');
+                    const allBrandsLinkHTML = `<a href="/" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">All Brands</a>`;
                     const desktopDropdownHTML = `
                         <div class="relative nav-link" id="brands-dropdown">
                             <button id="brands-btn" class="flex items-center">
@@ -597,10 +596,10 @@
                                 ${brandDropdownItemsHTML}
                             </div>
                         </div>`;
-                    mainNavContainer.innerHTML = `<a href="/" class="nav-link active">Home</a>${desktopDropdownHTML}<a href="/how-to-buy" class="nav-link">How-to-buy</a>`;
+                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a>${desktopDropdownHTML}<a href="/how-to-buy.html" class="nav-link">How-to-buy</a>`;
                     
-                    const mobileBrandDropdownItemsHTML = brandsCache.map(brand => `<a href="#" data-brandid="${brand.id}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
-                    const mobileAllBrandsLinkHTML = `<a href="#" data-brandid="all" class="block py-2 text-lg text-text-secondary hover:text-white">All Brands</a>`;
+                    const mobileBrandDropdownItemsHTML = brandsCache.map(brand => `<a href="/?brand=${brand.id}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
+                    const mobileAllBrandsLinkHTML = `<a href="/" class="block py-2 text-lg text-text-secondary hover:text-white">All Brands</a>`;
                     const mobileDropdownHTML = `
                         <div class="relative w-full">
                             <button id="mobile-brands-btn" class="nav-link text-lg font-medium flex justify-between items-center w-full">
@@ -611,7 +610,7 @@
                                 ${mobileBrandDropdownItemsHTML}
                             </div>
                         </div>`;
-                    mobileNavContent.innerHTML = `<a href="/" class="nav-link active text-lg font-medium">Home</a>${mobileDropdownHTML}<a href="/how-to-buy" class="nav-link text-lg font-medium">How-to-buy</a>`;
+                    mobileNavContent.innerHTML = `<a href="/" class="nav-link text-lg font-medium">Home</a>${mobileDropdownHTML}<a href="/how-to-buy.html" class="nav-link text-lg font-medium">How-to-buy</a>`;
                 }
                 
                 const socialSidebar = document.getElementById('social-sidebar');
@@ -673,19 +672,45 @@
             document.querySelectorAll('#category-filter-container .filter-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.category === currentCategoryFilter);
             });
-            document.querySelectorAll('#main-nav .nav-link').forEach(link => {
-                const isBrandsDropdown = link.id === 'brands-dropdown';
+            document.querySelectorAll('#main-nav .nav-link, #mobile-nav-content .nav-link').forEach(link => {
+                const isBrandsDropdown = link.id === 'brands-dropdown' || link.id === 'mobile-brands-btn';
                 const isHome = link.getAttribute('href') === '/';
+                
+                link.classList.remove('nav-link-active');
 
                 if (isBrandsDropdown) {
-                    link.classList.toggle('nav-link-active', currentBrandFilter !== 'all');
+                    if (currentBrandFilter !== 'all') link.classList.add('nav-link-active');
                 } else if (isHome) {
-                    link.classList.toggle('nav-link-active', currentBrandFilter === 'all' && currentCategoryFilter === 'all' && !currentSearchQuery);
+                    if (currentBrandFilter === 'all' && currentCategoryFilter === 'all' && !currentSearchQuery) {
+                        link.classList.add('nav-link-active');
+                    }
                 } else {
                     const href = link.getAttribute('href');
-                    link.classList.toggle('nav-link-active', window.location.pathname === href);
+                    if (window.location.pathname === href) {
+                        link.classList.add('nav-link-active');
+                    }
                 }
             });
+        }
+        
+        function setupCountdown(targetDate) {
+            const timerContainer = document.getElementById('countdown-timer');
+            if(!timerContainer) return;
+            timerContainer.innerHTML = `<div class="timer-box"><span id="days" class="timer-value">00</span><span class="timer-label">Days</span></div><div class="timer-box"><span id="hours" class="timer-value">00</span><span class="timer-label">Hours</span></div><div class="timer-box"><span id="minutes" class="timer-value">00</span><span class="timer-label">Minutes</span></div><div class="timer-box"><span id="seconds" class="timer-value">00</span><span class="timer-label">Seconds</span></div>`;
+            const daysEl = document.getElementById('days'), hoursEl = document.getElementById('hours'), minutesEl = document.getElementById('minutes'), secondsEl = document.getElementById('seconds');
+            if (!daysEl) return;
+            const countdownInterval = setInterval(() => {
+                const distance = targetDate.getTime() - new Date().getTime();
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('flash-sale-section').classList.add('hidden');
+                    return;
+                }
+                daysEl.textContent = String(Math.floor(distance / 864e5)).padStart(2, '0');
+                hoursEl.textContent = String(Math.floor((distance % 864e5) / 36e5)).padStart(2, '0');
+                minutesEl.textContent = String(Math.floor((distance % 36e5) / 6e4)).padStart(2, '0');
+                secondsEl.textContent = String(Math.floor((distance % 6e4) / 1e3)).padStart(2, '0');
+            }, 1000);
         }
 
         function setupEventListeners() {
@@ -724,6 +749,8 @@
                 if (!e.target.closest('#brands-dropdown')) {
                      document.getElementById('brands-menu')?.classList.remove('show');
                 }
+                const card = e.target.closest('.product-card');
+                if (card?.dataset.productName) logEvent('product_click', card.dataset.productName);
             });
             document.getElementById('brands-btn')?.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -735,13 +762,19 @@
                 lucide.createIcons();
             });
 
-            const handleBrandClick = (brandId) => {
+            const handleFilterClick = (type, value) => {
                 currentPage = 1;
                 allProductsLoaded = false;
-                currentBrandFilter = brandId;
-                currentCategoryFilter = 'all';
-                currentSearchQuery = '';
+                currentSearchQuery = ''; 
                 document.getElementById('search-input').value = '';
+
+                if (type === 'brand') {
+                    currentBrandFilter = value;
+                    currentCategoryFilter = 'all';
+                } else if (type === 'category') {
+                    currentCategoryFilter = value;
+                    currentBrandFilter = 'all';
+                }
 
                 fetchProductsPage(1); 
                 updateActiveUI();
@@ -751,12 +784,9 @@
             const setupMenuActions = (menuId) => {
                  document.getElementById(menuId)?.addEventListener('click', e => {
                     const link = e.target.closest('a');
-                    if (link) {
+                    if (link && link.dataset.brandid) {
                         e.preventDefault();
-                        const brandId = link.dataset.brandid;
-                        handleBrandClick(brandId);
-                        document.getElementById('brands-menu')?.classList.remove('show');
-                        toggleMobileMenu(false);
+                        window.location.href = link.href;
                     }
                 });
             }
@@ -781,16 +811,8 @@
             const categoryContainer = document.getElementById('category-filter-container');
             categoryContainer?.addEventListener('click', e => {
                 const button = e.target.closest('.filter-btn');
-                if (button) {
-                    currentPage = 1;
-                    allProductsLoaded = false;
-                    currentCategoryFilter = button.dataset.category;
-                    currentSearchQuery = ''; 
-                    document.getElementById('search-input').value = '';
-                    
-                    fetchProductsPage(1); 
-                    updateActiveUI();
-                    updateURL();
+                if (button && button.dataset.category) {
+                    handleFilterClick('category', button.dataset.category);
                 }
             });
         }
