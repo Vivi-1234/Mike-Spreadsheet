@@ -5,17 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel | Mike's Spreadsheet</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    
+    <link rel="preconnect" href="https://pyswwuldxsqihvlhzvgn.supabase.co">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -1562,10 +1564,7 @@
         function renderChart(canvasId, type, labels, data, label) {
             const ctx = document.getElementById(canvasId)?.getContext('2d');
             if (!ctx) return;
-            if (Chart.getChart(canvasId)) Chart.getChart(canvasId).destroy();
-            
             Chart.defaults.font.family = "'Inter', sans-serif";
-            
             const chartOptions = {
                 responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { labels: { color: '#FFFFFF' } } },
@@ -1578,8 +1577,15 @@
             const lineColor = label === 'Site Visits' ? '#EF4444' : '#B0B0B0';
             const bgColor = label === 'Site Visits' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(176, 176, 176, 0.2)';
             const chartData = { labels, datasets: [{ label, data, borderColor: lineColor, backgroundColor: bgColor, fill: 'start', tension: 0.4, pointBackgroundColor: lineColor, pointBorderColor: '#222222', pointHoverRadius: 6, pointHoverBorderWidth: 2 }] };
-            
-            new Chart(ctx, { type, data: chartData, options: chartOptions });
+
+            const existingChart = Chart.getChart(canvasId);
+            if (existingChart) {
+                existingChart.data = chartData;
+                existingChart.options = chartOptions; // Update options if they can change dynamically
+                existingChart.update();
+            } else {
+                new Chart(ctx, { type, data: chartData, options: chartOptions });
+            }
         }
         
         function exportAnalyticsToExcel() {
