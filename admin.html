@@ -332,21 +332,26 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 if (file) handleImageFile(file);
             }
             
-            function handleImageFile(file) {
+            async function handleImageFile(file) {
                 if (!file.type.startsWith('image/')) {
                     showAlert('请选择图片文件', true);
                     return;
                 }
                 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const base64 = e.target.result;
-                    hiddenInput.value = base64;
-                    preview.src = base64;
-                    preview.classList.remove('hidden');
-                    uploadArea.classList.add('hidden');
-                };
-                reader.readAsDataURL(file);
+                showLoading(true);
+                try {
+                    const imageUrl = await uploadImage(file, 'sellers');
+                    if (imageUrl) {
+                        hiddenInput.value = imageUrl;
+                        preview.src = imageUrl;
+                        preview.classList.remove('hidden');
+                        uploadArea.classList.add('hidden');
+                    }
+                } catch (error) {
+                    showAlert('图片上传失败: ' + error.message, true);
+                } finally {
+                    showLoading(false);
+                }
             }
             
             loadSellers();
@@ -1022,16 +1027,28 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             
             changeLogoBtn.addEventListener('click', () => logoFile.click());
             
-            logoFile.addEventListener('change', (e) => {
+            logoFile.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
                 if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const base64 = e.target.result;
-                        logoImg.src = base64;
-                        logoInput.value = base64;
-                    };
-                    reader.readAsDataURL(file);
+                    showLoading(true);
+                    try {
+                        // 删除旧图片
+                        const oldImageUrl = logoInput.value;
+                        if (oldImageUrl && !oldImageUrl.includes('placehold.co')) {
+                            await deleteImage(oldImageUrl, 'sellers');
+                        }
+                        
+                        // 上传新图片
+                        const imageUrl = await uploadImage(file, 'sellers');
+                        if (imageUrl) {
+                            logoImg.src = imageUrl;
+                            logoInput.value = imageUrl;
+                        }
+                    } catch (error) {
+                        showAlert('图片上传失败: ' + error.message, true);
+                    } finally {
+                        showLoading(false);
+                    }
                 }
             });
             
@@ -1394,6 +1411,20 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             if (error) { showAlert(`Image upload failed: ${error.message}`, true); return null; }
             const { data: { publicUrl } } = db.storage.from(bucket).getPublicUrl(fileName);
             return publicUrl;
+        }
+        
+        async function deleteImage(imageUrl, bucket = 'product-images') {
+            if (!imageUrl) return;
+            try {
+                // 从URL中提取文件名
+                const urlParts = imageUrl.split('/');
+                const fileName = urlParts[urlParts.length - 1];
+                if (fileName && fileName !== 'undefined') {
+                    await db.storage.from(bucket).remove([fileName]);
+                }
+            } catch (error) {
+                console.warn('Failed to delete image:', error.message);
+            }
         }
         
         async function openEditModal(productId) {
