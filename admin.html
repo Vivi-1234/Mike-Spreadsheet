@@ -163,7 +163,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
         // --- Global State & Caches ---
         let productsCache = [], tagsCache = [], navCache = [], brandsCache = [], socialLinksCache = [], sellersCache = [], currentAnalyticsData = [];
-        let sortableInstance = null, sortableNavInstance = null, sortableFlashSaleInstance = null, sortableTagsInstance = null, sortableBrandsInstance = null;
+        let sortableInstance = null, sortableNavInstance = null, sortableFlashSaleInstance = null, sortableTagsInstance = null, sortableBrandsInstance = null, sortableSellersInstance = null;
         let mainStepsSortable = null;
         let newProductFiles = new Map(), newSocialFiles = new Map(), newHowToBuyStepFiles = new Map();
         let currentEditFile = null, currentEditImageUrl = '';
@@ -986,6 +986,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             sellersList.innerHTML = '';
             sellersCache.forEach(seller => renderSellerItem(seller));
             lucide.createIcons();
+            
+            // 初始化排序功能
+            if (sortableSellersInstance) sortableSellersInstance.destroy();
+            sortableSellersInstance = new Sortable(sellersList, {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                handle: '.cursor-move'
+            });
         }
 
         function renderSellerItem(seller = {}, isNew = false) {
