@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestsellers - Mike's Spreadsheet</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #222222;
+            --bg-surface: #2a2a2a;
+            --bg-card: #303030;
+            --text-primary: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --border-color: #444444;
+            --accent-red: #EF4444;
+            --accent-red-hover: #DC2626;
+        }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 120vw;
+            height: 120vh;
+            z-index: -1;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.09) 0%, transparent 60%);
+            transform: translate(-50%, -50%);
+            animation: breathe 15s infinite alternate ease-in-out;
+            will-change: transform, opacity;
+        }
+
+        @keyframes breathe {
+            from {
+                opacity: 0.7;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+
+        .header {
+            background-color: rgba(34, 34, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            padding-bottom: 6px;
+            color: var(--text-secondary);
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            display: block;
+            margin-top: 4px;
+            right: 0;
+            background: var(--accent-red);
+            transition: width 0.3s ease;
+            bottom: 0;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--text-primary); }
+        .nav-link:hover:after, .nav-link.active:after { width: 100%; left: 0; }
+
+        .seller-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+        .seller-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+            border-color: #555;
+        }
+        .seller-card .logo-wrapper {
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            background-color: var(--bg-surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .seller-card .logo-wrapper img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background-color: var(--accent-red);
+            color: var(--text-primary);
+        }
+        .btn-primary:hover {
+            background-color: var(--accent-red-hover);
+        }
+
+        #brands-menu {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+        }
+        #brands-menu.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <header class="header sticky top-0 z-30">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="text-xl font-bold tracking-tighter truncate">Mike's Spreadsheet</a>
+                <nav id="main-nav" class="hidden md:flex items-center space-x-8"></nav>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="p-2">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black/50 z-40"></div>
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full w-64 bg-[#181818] shadow-lg z-50 p-6 transform translate-x-full">
+        <button id="close-mobile-menu-btn" class="absolute top-4 right-4 p-2">
+            <i data-lucide="x" class="h-6 w-6"></i>
+        </button>
+        <nav id="mobile-nav-content" class="mt-12 flex flex-col space-y-4"></nav>
+    </div>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative z-10">
+        <section class="text-center pt-0 pb-12 md:pb-16 fade-in-up">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight">Our Bestsellers</h1>
+            <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-text-secondary">Discover our top-rated sellers offering the best products and services.</p>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Seller Card 1 -->
+            <div class="seller-card">
+                <div class="logo-wrapper p-8">
+                    <img src="https://via.placeholder.com/400x225?text=Seller+1" alt="Seller 1 Logo">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">Premium Electronics Store</h3>
+                    <p class="text-text-secondary mb-4">Specializing in high-end electronics and gadgets. Known for exclusive deals on the latest tech products and exceptional customer service.</p>
+                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
+                </div>
+            </div>
+
+            <!-- Seller Card 2 -->
+            <div class="seller-card">
+                <div class="logo-wrapper p-8">
+                    <img src="https://via.placeholder.com/400x225?text=Seller+2" alt="Seller 2 Logo">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">Fashion Forward</h3>
+                    <p class="text-text-secondary mb-4">Your go-to destination for trendy fashion items. Offering a curated selection of clothing, accessories, and lifestyle products.</p>
+                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
+                </div>
+            </div>
+
+            <!-- Seller Card 3 -->
+            <div class="seller-card">
+                <div class="logo-wrapper p-8">
+                    <img src="https://via.placeholder.com/400x225?text=Seller+3" alt="Seller 3 Logo">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">Home Essentials Plus</h3>
+                    <p class="text-text-secondary mb-4">Everything you need for your home. From kitchen gadgets to home decor, we've got your home needs covered with the best prices.</p>
+                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
+                </div>
+            </div>
+
+            <!-- Seller Card 4 -->
+            <div class="seller-card">
+                <div class="logo-wrapper p-8">
+                    <img src="https://via.placeholder.com/400x225?text=Seller+4" alt="Seller 4 Logo">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">Sports & Outdoor Pro</h3>
+                    <p class="text-text-secondary mb-4">Your ultimate destination for sports equipment and outdoor gear. Quality products for both beginners and professionals.</p>
+                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
+                </div>
+            </div>
+
+            <!-- Seller Card 5 -->
+            <div class="seller-card">
+                <div class="logo-wrapper p-8">
+                    <img src="https://via.placeholder.com/400x225?text=Seller+5" alt="Seller 5 Logo">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">Beauty & Wellness</h3>
+                    <p class="text-text-secondary mb-4">Premium beauty products and wellness essentials. Featuring top brands and exclusive skincare collections at great prices.</p>
+                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
+                </div>
+            </div>
+
+            <!-- Seller Card 6 -->
+            <div class="seller-card">
+                <div class="logo-wrapper p-8">
+                    <img src="https://via.placeholder.com/400x225?text=Seller+6" alt="Seller 6 Logo">
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">Tech Accessories Hub</h3>
+                    <p class="text-text-secondary mb-4">One-stop shop for all your tech accessories needs. From phone cases to laptop bags, we have the latest and trendiest accessories.</p>
+                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-20 md:mt-28 border-t border-border-color bg-bg-surface relative z-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center">
+                <p class="font-bold text-lg">Mike's Spreadsheet</p>
+                <p class="text-sm text-text-secondary mt-2 max-w-md mx-auto">shamuckfinds.com does not sell any physical products and neither does Mulebuy.</p>
+                <div id="social-footer-container" class="flex justify-center items-center space-x-4 mt-6"></div>
+            </div>
+            <div class="mt-10 pt-8 border-t border-border-color text-center text-xs text-gray-500">
+                <p>&copy; 2025 Mike's Spreadsheet. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        const SUPABASE_URL = 'https://tmrnspktjewfkhbqitnw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtcm5zcGt0amV3ZmtoYnFpdG53Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQyNzM0ODYsImV4cCI6MjA2OTg0OTQ4Nn0._VoKxBW-Bz1GdxUAGVhApDQwR55idrA8DyxeP9cOoXQ';
+        const { createClient } = supabase;
+        const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function formatUrl(url) {
+            if (!url) return '#';
+            if (url.startsWith('http://') || url.startsWith('https://')) return url;
+            return `https://${url}`;
+        }
+
+        async function initializePage() {
+            try {
+                const [socialRes, brandsRes] = await Promise.all([
+                    db.from('social_links').select('*').order('display_order'),
+                    db.from('brands').select('*').order('name')
+                ]);
+
+                const socialLinks = socialRes.data;
+                const brands = brandsRes.data || [];
+
+                // Navigation
+                const mainNavContainer = document.getElementById('main-nav');
+                const mobileNavContent = document.getElementById('mobile-nav-content');
+                
+                if (mainNavContainer && mobileNavContent) {
+                    const brandDropdownItemsHTML = brands.map(brand => `<a href="/?brand=${brand.id}" data-brandid="${brand.id}" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">${brand.name}</a>`).join('');
+                    const allBrandsLinkHTML = `<a href="/" data-brandid="all" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md">All Brands</a>`;
+                    const desktopDropdownHTML = `
+                        <div class="relative nav-link" id="brands-dropdown">
+                            <button id="brands-btn" class="flex items-center">
+                                Brands <i data-lucide="chevron-down" class="h-4 w-4 ml-1"></i>
+                            </button>
+                            <div id="brands-menu" class="absolute right-0 mt-4 w-56 bg-bg-surface rounded-lg shadow-lg z-50 ring-1 ring-black ring-opacity-5 p-2 space-y-1">
+                                ${allBrandsLinkHTML}
+                                ${brandDropdownItemsHTML}
+                            </div>
+                        </div>`;
+
+                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a>${desktopDropdownHTML}<a href="/bestsellers.html" class="nav-link active">Bestsellers</a><a href="/how-to-buy.html" class="nav-link">How-to-buy</a>`;
+                    
+                    const mobileBrandDropdownItemsHTML = brands.map(brand => `<a href="/?brand=${brand.id}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
+                    const mobileAllBrandsLinkHTML = `<a href="/" data-brandid="all" class="block py-2 text-lg text-text-secondary hover:text-white">All Brands</a>`;
+                    const mobileDropdownHTML = `
+                        <div class="relative" id="mobile-brands-dropdown">
+                            <button id="mobile-brands-btn" class="flex items-center justify-between w-full py-2 text-lg text-text-secondary">
+                                Brands <i data-lucide="chevron-down" class="h-4 w-4 ml-1"></i>
+                            </button>
+                            <div id="mobile-brands-menu" class="hidden pl-4 space-y-2">
+                                ${mobileAllBrandsLinkHTML}
+                                ${mobileBrandDropdownItemsHTML}
+                            </div>
+                        </div>`;
+
+                    mobileNavContent.innerHTML = `<a href="/" class="nav-link text-lg font-medium">Home</a>${mobileDropdownHTML}<a href="/bestsellers.html" class="nav-link text-lg font-medium active">Bestsellers</a><a href="/how-to-buy.html" class="nav-link text-lg font-medium">How-to-buy</a>`;
+                }
+
+                // Social Links
+                const socialFooterContainer = document.getElementById('social-footer-container');
+                if (socialFooterContainer && socialLinks) {
+                    socialFooterContainer.innerHTML = socialLinks.map(link => `
+                        <a href="${formatUrl(link.url)}" target="_blank" rel="noopener noreferrer" class="text-text-secondary hover:text-text-primary transition-colors">
+                            <i data-lucide="${link.icon}" class="h-5 w-5"></i>
+                        </a>
+                    `).join('');
+                }
+
+                // Mobile Menu
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                const closeMobileMenuBtn = document.getElementById('close-mobile-menu-btn');
+                const mobileMenu = document.getElementById('mobile-menu');
+                const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+                const mobileBrandsBtn = document.getElementById('mobile-brands-btn');
+                const mobileBrandsMenu = document.getElementById('mobile-brands-menu');
+
+                function toggleMobileMenu() {
+                    const isOpen = mobileMenu.classList.contains('translate-x-0');
+                    mobileMenu.classList.toggle('translate-x-0', !isOpen);
+                    mobileMenuOverlay.classList.toggle('hidden', isOpen);
+                    document.body.style.overflow = isOpen ? '' : 'hidden';
+                }
+
+                mobileMenuBtn?.addEventListener('click', toggleMobileMenu);
+                closeMobileMenuBtn?.addEventListener('click', toggleMobileMenu);
+                mobileMenuOverlay?.addEventListener('click', toggleMobileMenu);
+
+                mobileBrandsBtn?.addEventListener('click', () => {
+                    mobileBrandsMenu?.classList.toggle('hidden');
+                    const icon = mobileBrandsBtn.querySelector('i');
+                    icon.dataset.lucide = mobileBrandsMenu?.classList.contains('hidden') ? 'chevron-down' : 'chevron-up';
+                    lucide.createIcons();
+                });
+
+                // Desktop Brands Dropdown
+                const brandsBtn = document.getElementById('brands-btn');
+                const brandsMenu = document.getElementById('brands-menu');
+
+                brandsBtn?.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    brandsMenu?.classList.toggle('show');
+                    const icon = brandsBtn.querySelector('i');
+                    icon.dataset.lucide = brandsMenu?.classList.contains('show') ? 'chevron-up' : 'chevron-down';
+                    lucide.createIcons();
+                });
+
+                document.addEventListener('click', () => {
+                    brandsMenu?.classList.remove('show');
+                    const icon = brandsBtn?.querySelector('i');
+                    if (icon) {
+                        icon.dataset.lucide = 'chevron-down';
+                        lucide.createIcons();
+                    }
+                });
+
+                // Initialize Lucide icons
+                lucide.createIcons();
+
+            } catch (error) {
+                console.error('Error initializing page:', error);
+            }
+        }
+
+        // Initialize the page
+        initializePage();
+    </script>
+</body>
+</html>

@@ -250,9 +250,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                                 ${brandDropdownItemsHTML}
                             </div>
                         </div>`;
-                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a>${desktopDropdownHTML}<a href="/how-to-buy.html" class="nav-link active">How-to-buy</a>`;
+                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a><a href="/bestsellers.html" class="nav-link">Bestsellers</a>${desktopDropdownHTML}<a href="/how-to-buy.html" class="nav-link active">How-to-buy</a>`;
                     
-                    const mobileBrandDropdownItemsHTML = brands.map(brand => `<a href="/?brand=${brand.id}" data-brandid="${brand.id}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
+                    const mobileBrandDropdownItemsHTML = brands.map(brand => `<a href="/?brand=${brand.id}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
                     const mobileAllBrandsLinkHTML = `<a href="/" data-brandid="all" class="block py-2 text-lg text-text-secondary hover:text-white">All Brands</a>`;
                     const mobileDropdownHTML = `
                         <div class="relative w-full">
