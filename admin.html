@@ -162,7 +162,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         let db; 
 
         // --- Global State & Caches ---
-        let productsCache = [], tagsCache = [], navCache = [], brandsCache = [], socialLinksCache = [], currentAnalyticsData = [];
+        let productsCache = [], tagsCache = [], navCache = [], brandsCache = [], socialLinksCache = [], sellersCache = [], currentAnalyticsData = [];
         let sortableInstance = null, sortableNavInstance = null, sortableFlashSaleInstance = null, sortableTagsInstance = null, sortableBrandsInstance = null;
         let mainStepsSortable = null;
         let newProductFiles = new Map(), newSocialFiles = new Map(), newHowToBuyStepFiles = new Map();
@@ -189,7 +189,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             settings: `<h2 class="text-2xl font-bold text-text-primary mb-6">Site Settings</h2><div class="panel p-6 space-y-6 max-w-2xl"><div><label for="siteTitle" class="label">Main Title</label><input type="text" id="siteTitle" class="input mt-1"></div><div><label for="siteSubtitle" class="label">Subtitle</label><textarea id="siteSubtitle" class="input mt-1" rows="2"></textarea></div><div class="text-right pt-4 border-t border-border-color"><button id="save-settings-btn" class="btn btn-primary">Save Settings</button></div></div>`,
             social: `<h2 class="text-2xl font-bold text-text-primary mb-6">Social Media Links</h2><div class="panel p-6 max-w-2xl"><div id="social-links-list" class="space-y-3 mb-4"></div><div class="mt-4"><button id="add-social-btn" class="btn btn-secondary text-sm"><i data-lucide="plus" class="mr-2 h-4 w-4"></i>Add Social Link</button></div><div class="text-right mt-4"><button id="save-social-btn" class="btn btn-primary">Save Social Links</button></div></div>`,
             flash_sale: `<div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-text-primary">Flash Sale Management</h2><button id="save-flash-sale-btn" class="btn btn-primary"><i data-lucide="save" class="mr-2 h-4 w-4"></i>Save Changes</button></div><div class="panel p-6 mb-8"><h3 class="text-lg font-semibold mb-4 text-text-primary">Activity Settings</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center"><div><label for="flash-sale-end-time" class="label">Countdown End Time</label><input type="datetime-local" id="flash-sale-end-time" class="input mt-1 flatpickr-input"></div><div class="flex items-center"><label class="toggle-switch"><input type="checkbox" id="flash-sale-active-toggle"><span class="toggle-slider"></span></label><label for="flash-sale-active-toggle" class="ml-3">Enable Flash Sale</label></div></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Available Products</h3><div id="all-products-list" class="space-y-2 h-96 overflow-y-auto border border-border-color p-2 rounded-lg bg-bg-main/50"></div></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Flash Sale Products (Drag to sort)</h3><div id="flash-sale-products-list" class="space-y-2 h-96 overflow-y-auto border border-border-color p-2 rounded-lg bg-bg-main/50"></div></div></div>`,
-            how_to_buy: `<div class="space-y-8"><div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-text-primary">"How-to-buy" Page Management</h2><button id="save-how-to-buy-btn" class="btn btn-primary"><i data-lucide="save" class="mr-2 h-4 w-4"></i>Save All Changes</button></div><div class="panel p-6 space-y-6"><h3 class="text-lg font-semibold text-text-primary">General Settings</h3><div><label for="how-to-buy-video-url" class="label">Tutorial Video URL</label><input type="text" id="how-to-buy-video-url" class="input mt-1" placeholder="Enter YouTube 'embed' link"></div><div><label for="how-to-buy-signup-url" class="label">Sign Up Button Link</label><input type="text" id="how-to-buy-signup-url" class="input mt-1" placeholder="Enter the link for the sign up button"></div></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Tutorial Steps</h3><p class="text-sm text-text-secondary mb-4">Add, remove, or reorder the main steps. Sub-steps can be managed within each main step.</p><div id="how-to-buy-steps-container" class="space-y-4"></div><div class="mt-6"><button id="add-how-to-buy-main-step-btn" class="btn btn-secondary"><i data-lucide="plus" class="mr-2 h-4 w-4"></i>Add New Main Step</button></div></div></div>`
+            how_to_buy: `<div class="space-y-8"><div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-text-primary">"How-to-buy" Page Management</h2><button id="save-how-to-buy-btn" class="btn btn-primary"><i data-lucide="save" class="mr-2 h-4 w-4"></i>Save All Changes</button></div><div class="panel p-6 space-y-6"><h3 class="text-lg font-semibold text-text-primary">General Settings</h3><div><label for="how-to-buy-video-url" class="label">Tutorial Video URL</label><input type="text" id="how-to-buy-video-url" class="input mt-1" placeholder="Enter YouTube 'embed' link"></div><div><label for="how-to-buy-signup-url" class="label">Sign Up Button Link</label><input type="text" id="how-to-buy-signup-url" class="input mt-1" placeholder="Enter the link for the sign up button"></div></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Tutorial Steps</h3><p class="text-sm text-text-secondary mb-4">Add, remove, or reorder the main steps. Sub-steps can be managed within each main step.</p><div id="how-to-buy-steps-container" class="space-y-4"></div><div class="mt-6"><button id="add-how-to-buy-main-step-btn" class="btn btn-secondary"><i data-lucide="plus" class="mr-2 h-4 w-4"></i>Add New Main Step</button></div></div></div>`,
+            sellers: `<div class="space-y-8"><div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-text-primary">Seller Management</h2><button id="save-sellers-btn" class="btn btn-primary"><i data-lucide="save" class="mr-2 h-4 w-4"></i>Save Changes</button></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Add New Seller</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label for="new-seller-name" class="label">Seller Name</label><input type="text" id="new-seller-name" class="input mt-1" placeholder="Enter seller name"></div><div><label for="new-seller-logo" class="label">Logo URL</label><input type="text" id="new-seller-logo" class="input mt-1" placeholder="Enter logo image URL"></div><div><label for="new-seller-link" class="label">Store Link</label><input type="text" id="new-seller-link" class="input mt-1" placeholder="Enter store URL"></div><div><label for="new-seller-category" class="label">Category</label><input type="text" id="new-seller-category" class="input mt-1" placeholder="e.g., Electronics, Fashion"></div></div><div class="mt-4"><label for="new-seller-description" class="label">Description</label><textarea id="new-seller-description" class="input mt-1" rows="3" placeholder="Describe the seller's specialties and products"></textarea></div><div class="mt-6 flex justify-end"><button id="add-seller-btn" class="btn btn-primary"><i data-lucide="plus" class="mr-2 h-4 w-4"></i>Add Seller</button></div></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Existing Sellers</h3><p class="text-sm text-text-secondary mb-4">Manage existing sellers. Drag to reorder.</p><div id="sellers-list" class="space-y-4"></div></div></div>`
         };
 
         // --- Core Logic ---
@@ -206,6 +207,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 case 'social': initSocialLinksPanel(); break;
                 case 'flash_sale': initFlashSalePanel(); break;
                 case 'how_to_buy': initHowToBuyPanel(); break;
+                case 'sellers': initSellersPanel(); break;
             }
         }
         function showLoading(show) { loadingOverlay.classList.toggle('hidden', !show); }
@@ -277,18 +279,26 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             loadHowToBuyData();
         }
 
+        function initSellersPanel() {
+            document.getElementById('add-seller-btn').addEventListener('click', addNewSeller);
+            document.getElementById('save-sellers-btn').addEventListener('click', saveSellers);
+            loadSellers();
+        }
+
         // --- Data Loading & Caching ---
         async function loadInitialAdminData() {
             showLoading(true);
-            const [navRes, tagsRes, brandsRes] = await Promise.all([
+            const [navRes, tagsRes, brandsRes, sellersRes] = await Promise.all([
                 db.from('navigation').select('*').order('display_order'),
                 db.from('product_tags').select('*').order('display_order'),
-                db.from('brands').select('*').order('name')
+                db.from('brands').select('*').order('name'),
+                db.from('sellers').select('*').order('display_order')
             ]);
             
             navCache = navRes.data || [];
             tagsCache = tagsRes.data || [];
             brandsCache = brandsRes.data || [];
+            sellersCache = sellersRes.data || [];
             
             showLoading(false);
         }
@@ -890,6 +900,108 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             } finally { showLoading(false); button.disabled = false; }
         }
 
+        // --- Seller Management Functions ---
+        async function loadSellers() {
+            const { data, error } = await db.from('sellers').select('*').order('display_order');
+            if (error) return showAlert(error.message, true);
+            sellersCache = data || [];
+            renderSellersFromCache();
+        }
+
+        function renderSellersFromCache() {
+            const sellersList = document.getElementById('sellers-list');
+            if (!sellersList) return;
+            sellersList.innerHTML = '';
+            sellersCache.forEach(seller => renderSellerItem(seller));
+            lucide.createIcons();
+        }
+
+        function renderSellerItem(seller = {}, isNew = false) {
+            const sellersList = document.getElementById('sellers-list');
+            if (!sellersList) return;
+            const div = document.createElement('div');
+            div.className = 'flex items-center gap-4 p-4 bg-bg-card rounded-lg seller-item-row';
+            div.dataset.id = seller.id || `new_${Date.now()}`;
+            div.innerHTML = `
+                <i data-lucide="grip-vertical" class="cursor-move text-gray-500 flex-shrink-0"></i>
+                <div class="flex-shrink-0">
+                    <img src="${seller.logo_url || 'https://placehold.co/60x60/303030/B0B0B0?text=Logo'}" class="w-15 h-15 object-cover rounded" alt="Logo">
+                </div>
+                <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <input type="text" value="${seller.name || ''}" class="input seller-name-input" placeholder="Seller Name">
+                    <input type="text" value="${seller.logo_url || ''}" class="input seller-logo-input" placeholder="Logo URL">
+                    <input type="text" value="${seller.store_link || ''}" class="input seller-link-input" placeholder="Store Link">
+                    <input type="text" value="${seller.category || ''}" class="input seller-category-input" placeholder="Category">
+                    <textarea class="input seller-description-input" rows="2" placeholder="Description">${seller.description || ''}</textarea>
+                </div>
+                <button class="delete-seller-btn p-2 hover:bg-gray-700 rounded-full flex-shrink-0">
+                    <i data-lucide="trash-2" class="h-4 w-4 text-danger-color"></i>
+                </button>
+            `;
+            div.querySelector('.delete-seller-btn').addEventListener('click', () => div.remove());
+            div.querySelector('.seller-logo-input').addEventListener('input', (e) => {
+                const img = div.querySelector('img');
+                img.src = e.target.value || 'https://placehold.co/60x60/303030/B0B0B0?text=Logo';
+            });
+            sellersList.appendChild(div);
+            if (isNew) { div.querySelector('.seller-name-input').focus(); lucide.createIcons(); }
+        }
+
+        function addNewSeller() {
+            const name = document.getElementById('new-seller-name').value.trim();
+            const logo = document.getElementById('new-seller-logo').value.trim();
+            const link = document.getElementById('new-seller-link').value.trim();
+            const category = document.getElementById('new-seller-category').value.trim();
+            const description = document.getElementById('new-seller-description').value.trim();
+            
+            if (name) {
+                renderSellerItem({ name, logo_url: logo, store_link: link, category, description }, true);
+                // Clear form
+                document.getElementById('new-seller-name').value = '';
+                document.getElementById('new-seller-logo').value = '';
+                document.getElementById('new-seller-link').value = '';
+                document.getElementById('new-seller-category').value = '';
+                document.getElementById('new-seller-description').value = '';
+            }
+        }
+
+        async function saveSellers(e) {
+            const button = e.target;
+            button.disabled = true; showLoading(true);
+            
+            const sellerRows = document.querySelectorAll('#sellers-list .seller-item-row');
+            
+            const updates = Array.from(sellerRows).map((row, index) => {
+                const id = row.dataset.id;
+                const name = row.querySelector('.seller-name-input').value.trim();
+                const logo_url = row.querySelector('.seller-logo-input').value.trim();
+                const store_link = row.querySelector('.seller-link-input').value.trim();
+                const category = row.querySelector('.seller-category-input').value.trim();
+                const description = row.querySelector('.seller-description-input').value.trim();
+                const record = { name, logo_url, store_link, category, description, display_order: index };
+                if (!id.startsWith('new_')) { record.id = parseInt(id); }
+                return record;
+            }).filter(r => r.name);
+
+            const currentIds = updates.filter(r => r.id).map(r => r.id);
+            const idsToDelete = sellersCache.map(s => s.id).filter(id => !currentIds.includes(id));
+            const recordsToUpdate = updates.filter(r => r.id);
+            const recordsToInsert = updates.filter(r => !r.id);
+
+            try {
+                if (idsToDelete.length > 0) await db.from('sellers').delete().in('id', idsToDelete);
+                if (recordsToUpdate.length > 0) await db.from('sellers').upsert(recordsToUpdate);
+                if (recordsToInsert.length > 0) await db.from('sellers').insert(recordsToInsert.map(({ id, ...rest }) => rest));
+                
+                showAlert('Sellers updated!');
+                const { data } = await db.from('sellers').select('*').order('display_order');
+                sellersCache = data || [];
+                renderSellersFromCache();
+
+            } catch (error) { showAlert('Sellers save failed: ' + error.message, true);
+            } finally { showLoading(false); button.disabled = false; }
+        }
+
         async function saveSocialLinks(e) {
             const button = e.target;
             button.disabled = true; showLoading(true);
@@ -1485,6 +1597,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 <button data-target="brands" class="tab-button"><i data-lucide="copyright" class="mr-3 h-5 w-5"></i>Brands</button>
                 <button data-target="tags" class="tab-button"><i data-lucide="tag" class="mr-3 h-5 w-5"></i>Tags</button>
                 <div class="px-3 py-2 text-xs uppercase text-gray-500 font-semibold tracking-wider">Pages</div>
+                <button data-target="sellers" class="tab-button"><i data-lucide="store" class="mr-3 h-5 w-5"></i>Sellers</button>
                 <button data-target="how_to_buy" class="tab-button"><i data-lucide="book-open" class="mr-3 h-5 w-5"></i>How-to-buy</button>
                 <button data-target="navigation" class="tab-button"><i data-lucide="list" class="mr-3 h-5 w-5"></i>Categories</button>
                 <div class="px-3 py-2 text-xs uppercase text-gray-500 font-semibold tracking-wider">Settings</div>
