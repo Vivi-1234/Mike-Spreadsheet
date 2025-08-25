@@ -267,7 +267,7 @@
                             </div>
                         </div>`;
 
-                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a>${desktopDropdownHTML}<a href="/bestsellers.html" class="nav-link active">Bestsellers</a><a href="/how-to-buy.html" class="nav-link">How-to-buy</a>`;
+                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a>${desktopDropdownHTML}<a href="/bestsellers" class="nav-link active">Bestsellers</a><a href="/how-to-buy" class="nav-link">How-to-buy</a>`;
                     
                     const mobileBrandDropdownItemsHTML = brands.map(brand => `<a href="/?brand=${brand.id}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
                     const mobileAllBrandsLinkHTML = `<a href="/" data-brandid="all" class="block py-2 text-lg text-text-secondary hover:text-white">All Brands</a>`;
@@ -282,7 +282,7 @@
                             </div>
                         </div>`;
 
-                    mobileNavContent.innerHTML = `<a href="/" class="nav-link text-lg font-medium">Home</a>${mobileDropdownHTML}<a href="/bestsellers.html" class="nav-link text-lg font-medium active">Bestsellers</a><a href="/how-to-buy.html" class="nav-link text-lg font-medium">How-to-buy</a>`;
+                    mobileNavContent.innerHTML = `<a href="/" class="nav-link text-lg font-medium">Home</a>${mobileDropdownHTML}<a href="/bestsellers" class="nav-link text-lg font-medium active">Bestsellers</a><a href="/how-to-buy" class="nav-link text-lg font-medium">How-to-buy</a>`;
                 }
 
                 // Social Links
