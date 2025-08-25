@@ -95,16 +95,16 @@
         }
         .seller-card .logo-wrapper {
             overflow: hidden;
-            aspect-ratio: 16 / 9;
-            background-color: var(--bg-surface);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            aspect-ratio: 1 / 1;
         }
-        .seller-card .logo-wrapper img {
-            max-width: 80%;
-            max-height: 80%;
-            object-fit: contain;
+        .seller-card img {
+            transition: transform 0.4s ease;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .seller-card:hover img {
+            transform: scale(1.05);
         }
         
         .btn {
@@ -213,12 +213,11 @@
                 
                 return `
                     <div class="seller-card">
-                        <div class="logo-wrapper p-8">
+                        <div class="logo-wrapper">
                             <img src="${logoUrl}" alt="${seller.name} Logo" onerror="this.src='https://via.placeholder.com/400x225?text=No+Logo'">
                         </div>
                         <div class="p-6">
                             <h3 class="text-xl font-bold mb-2">${seller.name}</h3>
-                            <p class="text-text-secondary mb-2"><strong>Category:</strong> ${seller.category || 'General'}</p>
                             <p class="text-text-secondary mb-4">${seller.description || 'No description available.'}</p>
                             <a href="${storeLink}" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full">Visit Store</a>
                         </div>
