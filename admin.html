@@ -190,7 +190,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             social: `<h2 class="text-2xl font-bold text-text-primary mb-6">Social Media Links</h2><div class="panel p-6 max-w-2xl"><div id="social-links-list" class="space-y-3 mb-4"></div><div class="mt-4"><button id="add-social-btn" class="btn btn-secondary text-sm"><i data-lucide="plus" class="mr-2 h-4 w-4"></i>Add Social Link</button></div><div class="text-right mt-4"><button id="save-social-btn" class="btn btn-primary">Save Social Links</button></div></div>`,
             flash_sale: `<div class="flex justify-between items-center mb-6"><h2 class="text-2xl font-bold text-text-primary">Flash Sale Management</h2><button id="save-flash-sale-btn" class="btn btn-primary"><i data-lucide="save" class="mr-2 h-4 w-4"></i>Save Changes</button></div><div class="panel p-6 mb-8"><h3 class="text-lg font-semibold mb-4 text-text-primary">Activity Settings</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center"><div><label for="flash-sale-end-time" class="label">Countdown End Time</label><input type="datetime-local" id="flash-sale-end-time" class="input mt-1 flatpickr-input"></div><div class="flex items-center"><label class="toggle-switch"><input type="checkbox" id="flash-sale-active-toggle"><span class="toggle-slider"></span></label><label for="flash-sale-active-toggle" class="ml-3">Enable Flash Sale</label></div></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Available Products</h3><div id="all-products-list" class="space-y-2 h-96 overflow-y-auto border border-border-color p-2 rounded-lg bg-bg-main/50"></div></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Flash Sale Products (Drag to sort)</h3><div id="flash-sale-products-list" class="space-y-2 h-96 overflow-y-auto border border-border-color p-2 rounded-lg bg-bg-main/50"></div></div></div>`,
             how_to_buy: `<div class="space-y-8"><div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-text-primary">"How-to-buy" Page Management</h2><button id="save-how-to-buy-btn" class="btn btn-primary"><i data-lucide="save" class="mr-2 h-4 w-4"></i>Save All Changes</button></div><div class="panel p-6 space-y-6"><h3 class="text-lg font-semibold text-text-primary">General Settings</h3><div><label for="how-to-buy-video-url" class="label">Tutorial Video URL</label><input type="text" id="how-to-buy-video-url" class="input mt-1" placeholder="Enter YouTube 'embed' link"></div><div><label for="how-to-buy-signup-url" class="label">Sign Up Button Link</label><input type="text" id="how-to-buy-signup-url" class="input mt-1" placeholder="Enter the link for the sign up button"></div></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Tutorial Steps</h3><p class="text-sm text-text-secondary mb-4">Add, remove, or reorder the main steps. Sub-steps can be managed within each main step.</p><div id="how-to-buy-steps-container" class="space-y-4"></div><div class="mt-6"><button id="add-how-to-buy-main-step-btn" class="btn btn-secondary"><i data-lucide="plus" class="mr-2 h-4 w-4"></i>Add New Main Step</button></div></div></div>`,
-            sellers: `<div class="space-y-8"><div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-text-primary">Seller Management</h2><button id="save-sellers-btn" class="btn btn-primary"><i data-lucide="save" class="mr-2 h-4 w-4"></i>Save Changes</button></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Add New Seller</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label for="new-seller-name" class="label">Seller Name</label><input type="text" id="new-seller-name" class="input mt-1" placeholder="Enter seller name"></div><div><label for="new-seller-logo" class="label">Logo URL</label><input type="text" id="new-seller-logo" class="input mt-1" placeholder="Enter logo image URL"></div><div><label for="new-seller-link" class="label">Store Link</label><input type="text" id="new-seller-link" class="input mt-1" placeholder="Enter store URL"></div><div><label for="new-seller-category" class="label">Category</label><input type="text" id="new-seller-category" class="input mt-1" placeholder="e.g., Electronics, Fashion"></div></div><div class="mt-4"><label for="new-seller-description" class="label">Description</label><textarea id="new-seller-description" class="input mt-1" rows="3" placeholder="Describe the seller's specialties and products"></textarea></div><div class="mt-6 flex justify-end"><button id="add-seller-btn" class="btn btn-primary"><i data-lucide="plus" class="mr-2 h-4 w-4"></i>Add Seller</button></div></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Existing Sellers</h3><p class="text-sm text-text-secondary mb-4">Manage existing sellers. Drag to reorder.</p><div id="sellers-list" class="space-y-4"></div></div></div>`
+            sellers: `<div class="space-y-8"><div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-text-primary">Seller Management</h2><button id="save-sellers-btn" class="btn btn-primary"><i data-lucide="save" class="mr-2 h-4 w-4"></i>Save Changes</button></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Add New Seller</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label for="new-seller-name" class="label">Seller Name</label><input type="text" id="new-seller-name" class="input mt-1" placeholder="Enter seller name"></div><div><label class="label">Logo Image</label><div class="mt-1 space-y-2"><div class="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-600 rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700" id="new-seller-logo-upload"><div class="flex flex-col items-center justify-center pt-5 pb-6"><i data-lucide="upload" class="w-8 h-8 mb-2 text-gray-400"></i><p class="mb-2 text-sm text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p><p class="text-xs text-gray-400">PNG, JPG or GIF</p></div><input type="file" id="new-seller-logo-file" class="hidden" accept="image/*"></div><img id="new-seller-logo-preview" class="hidden w-full h-32 object-cover rounded-lg" alt="Logo preview"><input type="hidden" id="new-seller-logo" placeholder="Base64 image data"></div></div><div><label for="new-seller-link" class="label">Store Link</label><input type="text" id="new-seller-link" class="input mt-1" placeholder="Enter store URL"></div><div><label for="new-seller-category" class="label">Category</label><input type="text" id="new-seller-category" class="input mt-1" placeholder="e.g., Electronics, Fashion"></div></div><div class="mt-4"><label for="new-seller-description" class="label">Description</label><textarea id="new-seller-description" class="input mt-1" rows="3" placeholder="Describe the seller's specialties and products"></textarea></div><div class="mt-6 flex justify-end"><button id="add-seller-btn" class="btn btn-primary"><i data-lucide="plus" class="mr-2 h-4 w-4"></i>Add Seller</button></div></div><div class="panel p-6"><h3 class="text-lg font-semibold mb-4 text-text-primary">Existing Sellers</h3><p class="text-sm text-text-secondary mb-4">Manage existing sellers. Drag to reorder.</p><div id="sellers-list" class="space-y-4"></div></div></div>`
         };
 
         // --- Core Logic ---
@@ -282,6 +282,73 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         function initSellersPanel() {
             document.getElementById('add-seller-btn').addEventListener('click', addNewSeller);
             document.getElementById('save-sellers-btn').addEventListener('click', saveSellers);
+            
+            // 图片上传功能
+            const uploadArea = document.getElementById('new-seller-logo-upload');
+            const fileInput = document.getElementById('new-seller-logo-file');
+            const preview = document.getElementById('new-seller-logo-preview');
+            const hiddenInput = document.getElementById('new-seller-logo');
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            fileInput.addEventListener('change', handleImageUpload);
+            
+            // 拖拽上传
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('border-blue-500');
+            });
+            
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('border-blue-500');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('border-blue-500');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleImageFile(files[0]);
+                }
+            });
+            
+            // 粘贴图片功能
+            document.addEventListener('paste', (e) => {
+                if (document.querySelector('.sellers').style.display !== 'none') {
+                    const items = e.clipboardData.items;
+                    for (let item of items) {
+                        if (item.type.indexOf('image') !== -1) {
+                            const file = item.getAsFile();
+                            handleImageFile(file);
+                            break;
+                        }
+                    }
+                }
+            });
+            
+            function handleImageUpload(e) {
+                const file = e.target.files[0];
+                if (file) handleImageFile(file);
+            }
+            
+            function handleImageFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    showAlert('请选择图片文件', true);
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64 = e.target.result;
+                    hiddenInput.value = base64;
+                    preview.src = base64;
+                    preview.classList.remove('hidden');
+                    uploadArea.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+            
             loadSellers();
         }
 
@@ -922,14 +989,19 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             const div = document.createElement('div');
             div.className = 'flex items-center gap-4 p-4 bg-bg-card rounded-lg seller-item-row';
             div.dataset.id = seller.id || `new_${Date.now()}`;
+            const uniqueId = Date.now() + Math.random();
             div.innerHTML = `
                 <i data-lucide="grip-vertical" class="cursor-move text-gray-500 flex-shrink-0"></i>
-                <div class="flex-shrink-0">
-                    <img src="${seller.logo_url || 'https://placehold.co/60x60/303030/B0B0B0?text=Logo'}" class="w-15 h-15 object-cover rounded" alt="Logo">
+                <div class="flex-shrink-0 relative">
+                    <img src="${seller.logo_url || 'https://placehold.co/60x60/303030/B0B0B0?text=Logo'}" class="w-15 h-15 object-cover rounded seller-logo-img" alt="Logo">
+                    <button class="absolute -top-1 -right-1 w-6 h-6 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white text-xs change-logo-btn">
+                        <i data-lucide="camera" class="w-3 h-3"></i>
+                    </button>
+                    <input type="file" class="hidden seller-logo-file" accept="image/*" data-target="${uniqueId}">
+                    <input type="hidden" class="seller-logo-input" value="${seller.logo_url || ''}">
                 </div>
                 <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-3">
                     <input type="text" value="${seller.name || ''}" class="input seller-name-input" placeholder="Seller Name">
-                    <input type="text" value="${seller.logo_url || ''}" class="input seller-logo-input" placeholder="Logo URL">
                     <input type="text" value="${seller.store_link || ''}" class="input seller-link-input" placeholder="Store Link">
                     <input type="text" value="${seller.category || ''}" class="input seller-category-input" placeholder="Category">
                     <textarea class="input seller-description-input" rows="2" placeholder="Description">${seller.description || ''}</textarea>
@@ -938,11 +1010,31 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     <i data-lucide="trash-2" class="h-4 w-4 text-danger-color"></i>
                 </button>
             `;
+            
+            // 删除按钮事件
             div.querySelector('.delete-seller-btn').addEventListener('click', () => div.remove());
-            div.querySelector('.seller-logo-input').addEventListener('input', (e) => {
-                const img = div.querySelector('img');
-                img.src = e.target.value || 'https://placehold.co/60x60/303030/B0B0B0?text=Logo';
+            
+            // 图片更换功能
+            const changeLogoBtn = div.querySelector('.change-logo-btn');
+            const logoFile = div.querySelector('.seller-logo-file');
+            const logoImg = div.querySelector('.seller-logo-img');
+            const logoInput = div.querySelector('.seller-logo-input');
+            
+            changeLogoBtn.addEventListener('click', () => logoFile.click());
+            
+            logoFile.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const base64 = e.target.result;
+                        logoImg.src = base64;
+                        logoInput.value = base64;
+                    };
+                    reader.readAsDataURL(file);
+                }
             });
+            
             sellersList.appendChild(div);
             if (isNew) { div.querySelector('.seller-name-input').focus(); lucide.createIcons(); }
         }
@@ -962,6 +1054,15 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                 document.getElementById('new-seller-link').value = '';
                 document.getElementById('new-seller-category').value = '';
                 document.getElementById('new-seller-description').value = '';
+                
+                // 重置图片上传区域
+                const uploadArea = document.getElementById('new-seller-logo-upload');
+                const preview = document.getElementById('new-seller-logo-preview');
+                const fileInput = document.getElementById('new-seller-logo-file');
+                
+                uploadArea.classList.remove('hidden');
+                preview.classList.add('hidden');
+                fileInput.value = '';
             }
         }
 
