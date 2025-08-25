@@ -168,78 +168,8 @@
             <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-text-secondary">Discover our top-rated sellers offering the best products and services.</p>
         </section>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Seller Card 1 -->
-            <div class="seller-card">
-                <div class="logo-wrapper p-8">
-                    <img src="https://via.placeholder.com/400x225?text=Seller+1" alt="Seller 1 Logo">
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Premium Electronics Store</h3>
-                    <p class="text-text-secondary mb-4">Specializing in high-end electronics and gadgets. Known for exclusive deals on the latest tech products and exceptional customer service.</p>
-                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
-                </div>
-            </div>
-
-            <!-- Seller Card 2 -->
-            <div class="seller-card">
-                <div class="logo-wrapper p-8">
-                    <img src="https://via.placeholder.com/400x225?text=Seller+2" alt="Seller 2 Logo">
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Fashion Forward</h3>
-                    <p class="text-text-secondary mb-4">Your go-to destination for trendy fashion items. Offering a curated selection of clothing, accessories, and lifestyle products.</p>
-                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
-                </div>
-            </div>
-
-            <!-- Seller Card 3 -->
-            <div class="seller-card">
-                <div class="logo-wrapper p-8">
-                    <img src="https://via.placeholder.com/400x225?text=Seller+3" alt="Seller 3 Logo">
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Home Essentials Plus</h3>
-                    <p class="text-text-secondary mb-4">Everything you need for your home. From kitchen gadgets to home decor, we've got your home needs covered with the best prices.</p>
-                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
-                </div>
-            </div>
-
-            <!-- Seller Card 4 -->
-            <div class="seller-card">
-                <div class="logo-wrapper p-8">
-                    <img src="https://via.placeholder.com/400x225?text=Seller+4" alt="Seller 4 Logo">
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Sports & Outdoor Pro</h3>
-                    <p class="text-text-secondary mb-4">Your ultimate destination for sports equipment and outdoor gear. Quality products for both beginners and professionals.</p>
-                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
-                </div>
-            </div>
-
-            <!-- Seller Card 5 -->
-            <div class="seller-card">
-                <div class="logo-wrapper p-8">
-                    <img src="https://via.placeholder.com/400x225?text=Seller+5" alt="Seller 5 Logo">
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Beauty & Wellness</h3>
-                    <p class="text-text-secondary mb-4">Premium beauty products and wellness essentials. Featuring top brands and exclusive skincare collections at great prices.</p>
-                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
-                </div>
-            </div>
-
-            <!-- Seller Card 6 -->
-            <div class="seller-card">
-                <div class="logo-wrapper p-8">
-                    <img src="https://via.placeholder.com/400x225?text=Seller+6" alt="Seller 6 Logo">
-                </div>
-                <div class="p-6">
-                    <h3 class="text-xl font-bold mb-2">Tech Accessories Hub</h3>
-                    <p class="text-text-secondary mb-4">One-stop shop for all your tech accessories needs. From phone cases to laptop bags, we have the latest and trendiest accessories.</p>
-                    <a href="#" class="btn btn-primary w-full">Visit Store</a>
-                </div>
-            </div>
+        <div id="sellers-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Sellers will be loaded dynamically -->
         </div>
     </main>
 
@@ -268,15 +198,51 @@
             return `https://${url}`;
         }
 
+        function renderSellers(sellers) {
+            const sellersContainer = document.getElementById('sellers-container');
+            if (!sellersContainer) return;
+
+            if (!sellers || sellers.length === 0) {
+                sellersContainer.innerHTML = '<p class="text-center text-text-secondary text-lg col-span-full py-16">No sellers found.</p>';
+                return;
+            }
+
+            const sellersHTML = sellers.map(seller => {
+                const logoUrl = seller.logo_url || 'https://via.placeholder.com/400x225?text=No+Logo';
+                const storeLink = formatUrl(seller.store_link);
+                
+                return `
+                    <div class="seller-card">
+                        <div class="logo-wrapper p-8">
+                            <img src="${logoUrl}" alt="${seller.name} Logo" onerror="this.src='https://via.placeholder.com/400x225?text=No+Logo'">
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold mb-2">${seller.name}</h3>
+                            <p class="text-text-secondary mb-2"><strong>Category:</strong> ${seller.category || 'General'}</p>
+                            <p class="text-text-secondary mb-4">${seller.description || 'No description available.'}</p>
+                            <a href="${storeLink}" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full">Visit Store</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            sellersContainer.innerHTML = sellersHTML;
+        }
+
         async function initializePage() {
             try {
-                const [socialRes, brandsRes] = await Promise.all([
+                const [socialRes, brandsRes, sellersRes] = await Promise.all([
                     db.from('social_links').select('*').order('display_order'),
-                    db.from('brands').select('*').order('name')
+                    db.from('brands').select('*').order('name'),
+                    db.from('sellers').select('*').order('display_order')
                 ]);
 
                 const socialLinks = socialRes.data;
                 const brands = brandsRes.data || [];
+                const sellers = sellersRes.data || [];
+
+                // Render sellers
+                renderSellers(sellers);
 
                 // Navigation
                 const mainNavContainer = document.getElementById('main-nav');
