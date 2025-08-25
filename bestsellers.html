@@ -118,6 +118,12 @@
             justify-content: center;
             text-decoration: none;
         }
+        @media (max-width: 768px) {
+            .btn {
+                padding: 0.625rem 1.25rem;
+                font-size: 0.875rem;
+            }
+        }
         .btn-primary {
             background-color: var(--accent-red);
             color: var(--text-primary);
@@ -168,7 +174,7 @@
             <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-text-secondary">Discover our top-rated sellers offering the best products and services.</p>
         </section>
 
-        <div id="sellers-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div id="sellers-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             <!-- Sellers will be loaded dynamically -->
         </div>
     </main>
@@ -216,9 +222,9 @@
                         <div class="logo-wrapper">
                             <img src="${logoUrl}" alt="${seller.name} Logo" onerror="this.src='https://via.placeholder.com/400x225?text=No+Logo'">
                         </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold mb-2">${seller.name}</h3>
-                            <p class="text-text-secondary mb-4">${seller.description || 'No description available.'}</p>
+                        <div class="p-4 sm:p-6">
+                            <h3 class="text-lg sm:text-xl font-bold mb-2">${seller.name}</h3>
+                            <p class="text-sm sm:text-base text-text-secondary mb-4">${seller.description || 'No description available.'}</p>
                             <a href="${storeLink}" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full">Visit Store</a>
                         </div>
                     </div>
