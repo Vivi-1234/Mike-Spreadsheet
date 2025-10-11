@@ -1808,14 +1808,14 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             const { count: discountCount } = await db.from('products').select('*', { count: 'exact', head: true }).eq('discount_is_active', true).eq('is_active', true);
             showLoading(false);
 
-            const siteVisits = data.filter(e => e.event_type === 'site_visit');
-            const productClicks = data.filter(e => e.event_type === 'product_click');
+            const siteVisits = allData.filter(e => e.event_type === 'site_visit');
+            const productClicks = allData.filter(e => e.event_type === 'product_click');
             // 只排除明确的错误值，保留 null/undefined 的正常数据
             const validVisits = siteVisits.filter(e => e.country_code !== 'API Error' && e.country_code !== 'Network Error');
 
             // 调试信息
             console.log('=== Dashboard Data Debug ===');
-            console.log('Total events fetched:', data.length);
+            console.log('Total events fetched:', allData.length);
             console.log('Site visits:', siteVisits.length);
             console.log('Valid visits:', validVisits.length);
             console.log('Product clicks:', productClicks.length);
