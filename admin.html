@@ -1771,7 +1771,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             const startStr = startDate.toISOString();
             const endStr = new Date(endDate.getTime() + 24 * 60 * 60 * 1000 - 1).toISOString();
             
-            const { data, error } = await db.from('analytics_events').select('*').gte('created_at', startStr).lt('created_at', endStr);
+            // 移除默认的1000条限制，获取所有数据
+            const { data, error } = await db.from('analytics_events').select('*').gte('created_at', startStr).lt('created_at', endStr).limit(10000);
             if (error) { showLoading(false); return showAlert('Failed to load analytics: ' + error.message, true); }
             currentAnalyticsData = data || [];
 
