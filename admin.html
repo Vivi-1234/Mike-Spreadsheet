@@ -1781,7 +1781,20 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
             const siteVisits = data.filter(e => e.event_type === 'site_visit');
             const productClicks = data.filter(e => e.event_type === 'product_click');
-            const validVisits = siteVisits.filter(e => e.country_code && e.country_code !== 'API Error' && e.country_code !== 'Network Error');
+            // 只排除明确的错误值，保留 null/undefined 的正常数据
+            const validVisits = siteVisits.filter(e => e.country_code !== 'API Error' && e.country_code !== 'Network Error');
+
+            // 调试信息
+            console.log('=== Dashboard Data Debug ===');
+            console.log('Total events fetched:', data.length);
+            console.log('Site visits:', siteVisits.length);
+            console.log('Valid visits:', validVisits.length);
+            console.log('Product clicks:', productClicks.length);
+            if (validVisits.length > 0) {
+                console.log('Sample visit:', validVisits[0]);
+                console.log('First visit date:', new Date(validVisits[0].created_at).toLocaleDateString('en-CA'));
+                console.log('Last visit date:', new Date(validVisits[validVisits.length - 1].created_at).toLocaleDateString('en-CA'));
+            }
 
             document.getElementById('total-visits').textContent = validVisits.length;
             document.getElementById('total-product-clicks').textContent = productClicks.length;
@@ -1801,10 +1814,17 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         
         function processDataForChart(events, labels) {
             const dataMap = labels.reduce((acc, label) => { acc[label] = 0; return acc; }, {});
+            console.log('Processing chart with labels:', labels);
+            console.log('Processing', events.length, 'events');
+            
             events.forEach(event => {
                 const eventDate = new Date(event.created_at).toLocaleDateString('en-CA');
-                if(dataMap.hasOwnProperty(eventDate)) dataMap[eventDate]++;
+                if(dataMap.hasOwnProperty(eventDate)) {
+                    dataMap[eventDate]++;
+                }
             });
+            
+            console.log('Chart data map:', dataMap);
             return Object.values(dataMap);
         }
 
