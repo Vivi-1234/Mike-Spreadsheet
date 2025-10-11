@@ -1816,17 +1816,55 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             Chart.defaults.font.family = "'Inter', sans-serif";
             
             const chartOptions = {
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: '#FFFFFF' } } },
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { labels: { color: '#FFFFFF' } },
+                    tooltip: {
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label;
+                            }
+                        }
+                    }
+                },
                 scales: {
-                    x: { ticks: { color: '#FFFFFF' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
-                    y: { ticks: { color: '#FFFFFF' }, grid: { color: 'rgba(255, 255, 255, 0.1)' }, beginAtZero: true }
+                    x: { 
+                        ticks: { 
+                            color: '#FFFFFF',
+                            maxRotation: 45,
+                            minRotation: 45,
+                            autoSkip: true,
+                            maxTicksLimit: 15
+                        }, 
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' } 
+                    },
+                    y: { 
+                        ticks: { color: '#FFFFFF' }, 
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }, 
+                        beginAtZero: true 
+                    }
                 }
             };
             
             const lineColor = label === 'Site Visits' ? '#EF4444' : '#B0B0B0';
             const bgColor = label === 'Site Visits' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(176, 176, 176, 0.2)';
-            const chartData = { labels, datasets: [{ label, data, borderColor: lineColor, backgroundColor: bgColor, fill: 'start', tension: 0.4, pointBackgroundColor: lineColor, pointBorderColor: '#222222', pointHoverRadius: 6, pointHoverBorderWidth: 2 }] };
+            const chartData = { 
+                labels, 
+                datasets: [{ 
+                    label, 
+                    data, 
+                    borderColor: lineColor, 
+                    backgroundColor: bgColor, 
+                    fill: 'start', 
+                    tension: 0.4, 
+                    pointBackgroundColor: lineColor, 
+                    pointBorderColor: '#222222', 
+                    pointHoverRadius: 6, 
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 3
+                }] 
+            };
             
             new Chart(ctx, { type, data: chartData, options: chartOptions });
         }
