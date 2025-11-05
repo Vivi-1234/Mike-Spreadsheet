@@ -13,12 +13,12 @@
       "destination": "/bestsellers.html"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/products",
+      "destination": "/products.html"
     },
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     }
   ]
 }

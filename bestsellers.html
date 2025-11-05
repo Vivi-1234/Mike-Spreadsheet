@@ -174,7 +174,7 @@
             <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-text-secondary">Discover our top-rated sellers offering the best products and services.</p>
         </section>
 
-        <div id="sellers-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+        <div id="sellers-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
             <!-- Sellers will be loaded dynamically -->
         </div>
     </main>
@@ -267,7 +267,7 @@
                             </div>
                         </div>`;
 
-                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Home</a>${desktopDropdownHTML}<a href="/bestsellers" class="nav-link active">Bestsellers</a><a href="/how-to-buy" class="nav-link">How-to-buy</a>`;
+                    mainNavContainer.innerHTML = `<a href="/" class="nav-link">Products</a>${desktopDropdownHTML}<a href="/bestsellers" class="nav-link active">Bestsellers</a><a href="/how-to-buy" class="nav-link">How-to-buy</a>`;
                     
                     const mobileBrandDropdownItemsHTML = brands.map(brand => `<a href="/?brand=${brand.id}" class="block py-2 text-lg text-text-secondary hover:text-white">${brand.name}</a>`).join('');
                     const mobileAllBrandsLinkHTML = `<a href="/" data-brandid="all" class="block py-2 text-lg text-text-secondary hover:text-white">All Brands</a>`;
@@ -282,7 +282,7 @@
                             </div>
                         </div>`;
 
-                    mobileNavContent.innerHTML = `<a href="/" class="nav-link text-lg font-medium">Home</a>${mobileDropdownHTML}<a href="/bestsellers" class="nav-link text-lg font-medium active">Bestsellers</a><a href="/how-to-buy" class="nav-link text-lg font-medium">How-to-buy</a>`;
+                    mobileNavContent.innerHTML = `<a href="/" class="nav-link text-lg font-medium">Products</a>${mobileDropdownHTML}<a href="/bestsellers" class="nav-link text-lg font-medium active">Bestsellers</a><a href="/how-to-buy" class="nav-link text-lg font-medium">How-to-buy</a>`;
                 }
 
                 // Social Links
