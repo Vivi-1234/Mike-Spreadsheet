@@ -5,12 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mike's Spreadsheet</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- DNS 预解析和预连接 - 加速外部资源加载 -->
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://tmrnspktjewfkhbqitnw.supabase.co">
+    <link rel="preconnect" href="https://tmrnspktjewfkhbqitnw.supabase.co" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 关键CSS优先加载 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    
+    <!-- Tailwind需要同步加载以解析HTML -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 非关键脚本延迟加载 -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
     <style>
         :root {
             --bg-main: #222222;
@@ -98,10 +112,16 @@
             aspect-ratio: 1 / 1;
         }
         .product-card img {
-            transition: transform 0.4s ease;
+            transition: transform 0.4s ease, opacity 0.3s ease;
             width: 100%;
             height: 100%;
             object-fit: cover;
+            opacity: 0;
+            background-color: var(--bg-card);
+        }
+        .product-card img.loaded,
+        .product-card img[src]:not([src=""]) {
+            opacity: 1;
         }
         .product-card:hover img { transform: scale(1.05); }
         
@@ -435,7 +455,6 @@
                     </button>
                     <div id="price-sort-menu" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-52 rounded-lg z-[100] p-2 space-y-1 hidden">
                         <button data-sort="default" class="sort-option w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md transition-colors">Default</button>
-                        <button data-sort="most-viewed" class="sort-option w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md transition-colors">Most Viewed</button>
                         <button data-sort="price-asc" class="sort-option w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md transition-colors">Price: Low to High</button>
                         <button data-sort="price-desc" class="sort-option w-full text-left px-4 py-2 text-sm text-text-secondary hover:bg-bg-card hover:text-white rounded-md transition-colors">Price: High to Low</button>
                     </div>
@@ -479,7 +498,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         
         // --- State ---
         let currentCategoryFilter = 'all', currentBrandFilter = 'all', currentSearchQuery = '';
-        let currentPriceSort = 'default'; // 'default', 'price-asc', 'price-desc', 'most-viewed'
+        let currentPriceSort = 'default'; // 'default', 'price-asc', 'price-desc'
         let cnyToUsdRate = 0.14, userCountryCode = null;
         let currentPage = 1;
         const pageSize = 50; 
@@ -487,42 +506,27 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         let allProductsLoaded = false;
         let scrollObserver = null;
         let brandsCache = [];
-        let productClickCounts = {}; // Cache for product click counts
+
+        // --- 数据缓存 ---
+        const dataCache = new Map();
+        const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+        
+        function getCachedData(key) {
+            const cached = dataCache.get(key);
+            if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+                return cached.data;
+            }
+            return null;
+        }
+        
+        function setCachedData(key, data) {
+            dataCache.set(key, {
+                data: data,
+                timestamp: Date.now()
+            });
+        }
 
         // --- Core Logic ---
-        
-        async function fetchProductClickCounts() {
-            try {
-                // Only fetch data from the last 30 days for better performance
-                const thirtyDaysAgo = new Date();
-                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-                
-                const { data, error } = await db
-                    .from('analytics_events')
-                    .select('event_value')
-                    .eq('event_type', 'product_click')
-                    .gte('created_at', thirtyDaysAgo.toISOString());
-                
-                if (error) {
-                    console.error('Error fetching product clicks:', error);
-                    return {};
-                }
-                
-                // Count clicks per product name
-                const counts = {};
-                data.forEach(event => {
-                    if (event.event_value) {
-                        counts[event.event_value] = (counts[event.event_value] || 0) + 1;
-                    }
-                });
-                
-                console.log(`Loaded ${data.length} product clicks from last 30 days`);
-                return counts;
-            } catch (error) {
-                console.error('Error in fetchProductClickCounts:', error);
-                return {};
-            }
-        }
         
         function debounce(func, delay) {
             let timeout;
@@ -598,6 +602,23 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             productContainer.innerHTML = skeletonHTML;
         }
         
+        // 图片懒加载观察器
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    const src = img.dataset.src || img.src;
+                    if (src && img.src !== src) {
+                        img.src = src;
+                        img.classList.add('loaded');
+                    }
+                    imageObserver.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '50px' // 提前50px开始加载
+        });
+        
         function renderProducts(productArray, containerId, append = false) {
             const productContainer = document.getElementById(containerId);
             if (!productContainer) return;
@@ -657,6 +678,12 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             }).join('');
 
             productContainer.insertAdjacentHTML('beforeend', productsHTML);
+            
+            // 观察新添加的图片
+            setTimeout(() => {
+                const images = productContainer.querySelectorAll('img[loading="lazy"]');
+                images.forEach(img => imageObserver.observe(img));
+            }, 0);
         }
 
         function updateURL() {
@@ -693,43 +720,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             if (currentSearchQuery) query = query.ilike('name', `%${currentSearchQuery}%`);
 
             // Apply sorting
-            if (currentPriceSort === 'most-viewed') {
-                // For most-viewed, we need to fetch all products and sort client-side
-                // Remove range first to get all products
-                const { data: allData, error: fetchError, count } = await query;
-                
-                if (fetchError) {
-                    isLoadingMore = false;
-                    document.getElementById('loading-indicator').classList.remove('visible');
-                    console.error("Error fetching products:", fetchError);
-                    document.getElementById('product-list-container').innerHTML = `<p class="text-center text-red-500 text-lg col-span-full">Failed to load products.</p>`;
-                    return;
-                }
-                
-                // Sort by click count
-                const sortedData = allData.sort((a, b) => {
-                    const aClicks = productClickCounts[a.name] || 0;
-                    const bClicks = productClickCounts[b.name] || 0;
-                    return bClicks - aClicks;
-                });
-                
-                // Paginate client-side
-                const data = sortedData.slice(from, to + 1);
-                
-                isLoadingMore = false;
-                document.getElementById('loading-indicator').classList.remove('visible');
-
-                if (page === 1) renderProducts(data, 'product-list-container', false);
-                else renderProducts(data, 'product-list-container', true);
-
-                if (data.length < pageSize || (page * pageSize) >= count) {
-                    allProductsLoaded = true;
-                    if (scrollObserver) scrollObserver.disconnect();
-                } else {
-                    setupInfiniteScroll();
-                }
-                return;
-            } else if (currentPriceSort === 'price-asc') {
+            if (currentPriceSort === 'price-asc') {
                 query = query.order('price', { ascending: true });
             } else if (currentPriceSort === 'price-desc') {
                 query = query.order('price', { ascending: false });
@@ -783,21 +774,39 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
         async function loadInitialData() {
             try {
-                try {
-                    const rateResponse = await fetch('https://api.frankfurter.app/latest?from=CNY&to=USD');
-                    if (rateResponse.ok) { cnyToUsdRate = (await rateResponse.json()).rates.USD; }
-                } catch (rateError) { console.error('Error fetching exchange rate:', rateError); }
+                // 缓存汇率数据
+                let cachedRate = getCachedData('exchangeRate');
+                if (cachedRate) {
+                    cnyToUsdRate = cachedRate;
+                } else {
+                    try {
+                        const rateResponse = await fetch('https://api.frankfurter.app/latest?from=CNY&to=USD');
+                        if (rateResponse.ok) { 
+                            cnyToUsdRate = (await rateResponse.json()).rates.USD;
+                            setCachedData('exchangeRate', cnyToUsdRate);
+                        }
+                    } catch (rateError) { console.error('Error fetching exchange rate:', rateError); }
+                }
 
-                // Fetch product click counts for most-viewed sorting
-                productClickCounts = await fetchProductClickCounts();
-
-                const [settingsRes, navRes, brandsRes, socialRes, flashSaleSettingsRes] = await Promise.all([
-                    db.from('settings').select('*').limit(1).single(),
-                    db.from('navigation').select('*').order('display_order'),
-                    db.from('brands').select('*').order('name'),
-                    db.from('social_links').select('*').order('display_order'),
-                    db.from('flash_sale_settings').select('*').single()
-                ]);
+                // 检查缓存的配置数据
+                const cachedConfig = getCachedData('siteConfig');
+                let settingsRes, navRes, brandsRes, socialRes, flashSaleSettingsRes;
+                
+                if (cachedConfig) {
+                    ({ settingsRes, navRes, brandsRes, socialRes, flashSaleSettingsRes } = cachedConfig);
+                } else {
+                    const results = await Promise.all([
+                        db.from('settings').select('*').limit(1).single(),
+                        db.from('navigation').select('*').order('display_order'),
+                        db.from('brands').select('*').order('name'),
+                        db.from('social_links').select('*').order('display_order'),
+                        db.from('flash_sale_settings').select('*').single()
+                    ]);
+                    [settingsRes, navRes, brandsRes, socialRes, flashSaleSettingsRes] = results;
+                    
+                    // 缓存配置数据
+                    setCachedData('siteConfig', { settingsRes, navRes, brandsRes, socialRes, flashSaleSettingsRes });
+                }
 
                 const settings = settingsRes.data;
                 const navItems = navRes.data || [];
@@ -1097,9 +1106,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
                     
                     // Update button label
                     const sortLabel = document.getElementById('sort-label');
-                    if (sortValue === 'most-viewed') {
-                        sortLabel.textContent = 'Most Viewed';
-                    } else if (sortValue === 'price-asc') {
+                    if (sortValue === 'price-asc') {
                         sortLabel.textContent = 'Price: Low to High';
                     } else if (sortValue === 'price-desc') {
                         sortLabel.textContent = 'Price: High to Low';
@@ -1148,10 +1155,22 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             }
         }
         
-        document.addEventListener('DOMContentLoaded', () => {
+        // 确保所有依赖加载完成后再初始化
+        function initWhenReady() {
+            if (typeof supabase === 'undefined' || typeof lucide === 'undefined') {
+                setTimeout(initWhenReady, 100);
+                return;
+            }
+            
             loadInitialData();
             initGeoAndLog();
-        });
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initWhenReady);
+        } else {
+            initWhenReady();
+        }
     </script>
 </body>
 </html>

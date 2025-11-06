@@ -5,12 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bestsellers - Mike's Spreadsheet</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛒</text></svg>">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- DNS 预解析和预连接 -->
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://tmrnspktjewfkhbqitnw.supabase.co">
+    <link rel="preconnect" href="https://tmrnspktjewfkhbqitnw.supabase.co" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- 优化字体加载 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
     <style>
         :root {
             --bg-main: #222222;
@@ -350,8 +362,20 @@
             }
         }
 
-        // Initialize the page
-        initializePage();
+        // 确保所有依赖加载完成后再初始化
+        function initWhenReady() {
+            if (typeof supabase === 'undefined' || typeof lucide === 'undefined') {
+                setTimeout(initWhenReady, 100);
+                return;
+            }
+            initializePage();
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initWhenReady);
+        } else {
+            initWhenReady();
+        }
     </script>
 </body>
 </html>
