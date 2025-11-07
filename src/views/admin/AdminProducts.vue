@@ -1,127 +1,505 @@
 <template>
-  <div class="space-y-8">
-    <div class="flex justify-between items-center">
-      <h2 class="text-2xl font-bold text-text-primary">Product Management</h2>
-      <div class="flex gap-2">
-        <button @click="downloadTemplate" class="btn btn-secondary text-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          Template
-        </button>
-        <button @click="importProducts" class="btn btn-secondary text-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          Import
-        </button>
-        <button @click="exportProducts" class="btn btn-secondary text-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          Export
-        </button>
+  <div class="space-y-6">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+          <div>
+            <h2 class="text-2xl font-bold text-text-primary">Product Management</h2>
+          </div>
+          
+          <!-- Stats Card Inline -->
+          <div class="stat-card-inline">
+            <div class="stat-icon-small">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+            </div>
+            <div class="stat-text-horizontal">
+              <span class="stat-label-inline">Total</span>
+              <span class="stat-value-inline">{{ totalProducts }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex flex-wrap gap-2">
+          <button @click="openAddProductModal" class="btn btn-primary btn-compact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span class="ml-2">Add Product</span>
+          </button>
+          <button @click="downloadTemplate" class="btn btn-secondary btn-compact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span class="ml-2">Template</span>
+          </button>
+          <button @click="importProducts" class="btn btn-secondary btn-compact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span class="ml-2">Import</span>
+          </button>
+          <button @click="exportProducts" class="btn btn-secondary btn-compact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span class="ml-2">Export</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Add New Products Section -->
-    <div class="panel p-6">
-      <h3 class="font-semibold mb-4 text-lg">Add New Product(s)</h3>
-      
-      <div class="space-y-4">
-        <div 
-          v-for="(product, index) in newProducts" 
-          :key="product.tempId"
-          class="add-form-row relative p-4 border border-border-color rounded-lg"
-        >
-          <button 
-            @click="removeProductFormRow(index)" 
-            class="remove-form-row-btn absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Add Product Modal -->
+    <div v-if="showAddProductModal" class="modal-overlay" @click.self="closeAddProductModal">
+      <div class="modal-container">
+        <div class="modal-header">
+          <div class="flex items-center gap-3">
+            <div class="modal-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <path d="M16 10a4 4 0 0 1-8 0"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="modal-title">Add New Product</h3>
+            </div>
+          </div>
+          <button @click="closeAddProductModal" class="modal-close-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input 
-              v-model="product.name" 
-              class="input" 
-              placeholder="Product Name"
-            >
-            <input 
-              type="number" 
-              step="0.01"
-              v-model="product.price" 
-              class="input" 
-              placeholder="Price (CNY)"
-            >
-          </div>
-          
-          <div class="mt-4">
-            <input 
-              v-model="product.target_url" 
-              class="input" 
-              placeholder="Target URL"
-            >
-          </div>
-          
-          <div class="mt-4">
-            <label class="label mb-1 block">Product Image</label>
-            <div 
-              class="add-image-box mt-1 relative p-4 rounded-lg bg-bg-main text-center cursor-pointer text-gray-400 border-2 border-dashed border-gray-600 hover:border-accent-red"
-              @click="triggerFileInput(product.tempId)"
-            >
-              <p v-if="!product.imageFile && !product.image_url" class="add-image-placeholder">Click to upload</p>
-              <img 
-                v-if="product.imageFile" 
-                :src="product.imagePreview" 
-                class="max-h-24 mx-auto rounded add-preview-image"
-              >
-              <p v-if="product.imageFile" class="text-xs text-green-400 mt-2">{{ product.imageFile.name }}</p>
+        </div>
+        
+        <div class="modal-body">
+          <div class="form-grid">
+            <!-- Basic Information -->
+            <div class="form-section">
+              <h4 class="section-title">Basic Information</h4>
+              
+              <div class="form-group">
+                <label class="form-label">Product Name <span class="required">*</span></label>
+                <input 
+                  v-model="newProduct.name" 
+                  class="input" 
+                  placeholder="Enter product name"
+                >
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Price (¥) <span class="required">*</span></label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    v-model="newProduct.price" 
+                    class="input input-number" 
+                    placeholder="0.00"
+                  >
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label">Brand</label>
+                  <div class="custom-dropdown" @click="toggleBrandDropdown" ref="brandDropdownRef">
+                    <div class="dropdown-selected">
+                      <span :class="{ 'placeholder': !selectedBrandName }">
+                        {{ selectedBrandName || '-- Select Brand --' }}
+                      </span>
+                      <svg 
+                        class="dropdown-arrow" 
+                        :class="{ 'open': isBrandDropdownOpen }"
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        stroke-width="2" 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                    <transition name="dropdown">
+                      <div v-if="isBrandDropdownOpen" class="dropdown-menu">
+                        <div class="dropdown-search">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                          </svg>
+                          <input 
+                            v-model="brandSearchQuery"
+                            type="text" 
+                            placeholder="Search brands..."
+                            @click.stop
+                          >
+                        </div>
+                        <div class="dropdown-options">
+                          <div 
+                            class="dropdown-option"
+                            :class="{ 'selected': !newProduct.brand_id }"
+                            @click.stop="selectBrand('')"
+                          >
+                            <span>-- Select Brand --</span>
+                            <svg v-if="!newProduct.brand_id" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                          </div>
+                          <div 
+                            v-for="brand in filteredBrands" 
+                            :key="brand.id"
+                            class="dropdown-option"
+                            :class="{ 'selected': newProduct.brand_id === brand.id }"
+                            @click.stop="selectBrand(brand.id)"
+                          >
+                            <span>{{ brand.name }}</span>
+                            <svg v-if="newProduct.brand_id === brand.id" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                          </div>
+                          <div v-if="filteredBrands.length === 0" class="dropdown-empty">
+                            No brands found
+                          </div>
+                        </div>
+                      </div>
+                    </transition>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Target URL <span class="required">*</span></label>
+                <input 
+                  v-model="newProduct.target_url" 
+                  class="input"
+                >
+              </div>
             </div>
-            <input 
-              :ref="el => setFileInput(product.tempId, el)"
-              type="file" 
-              class="hidden" 
-              accept="image/*"
-              @change="(e) => handleNewProductImageUpload(e, index)"
-            >
+            
+            <!-- Categories & Tags -->
+            <div class="form-section">
+              <h4 class="section-title">Categories & Tags</h4>
+              
+              <div class="form-group">
+                <label class="form-label">Categories</label>
+                <div class="checkbox-grid">
+                  <div 
+                    v-for="cat in categories" 
+                    :key="cat.link_text"
+                    class="checkbox-item"
+                    @click="toggleCategory(cat.link_text)"
+                  >
+                    <input 
+                      type="checkbox" 
+                      :checked="newProduct.selectedCategories.includes(cat.link_text)"
+                      class="checkbox-input"
+                      @click.stop="toggleCategory(cat.link_text)"
+                    >
+                    <span class="checkbox-label">{{ cat.link_text }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Tags</label>
+                <div class="checkbox-grid">
+                  <div 
+                    v-for="tag in tags" 
+                    :key="tag.name"
+                    class="checkbox-item"
+                    @click="toggleTag(tag.name)"
+                  >
+                    <input 
+                      type="checkbox" 
+                      :checked="newProduct.selectedTags.includes(tag.name)"
+                      class="checkbox-input"
+                      @click.stop="toggleTag(tag.name)"
+                    >
+                    <span class="checkbox-label">{{ tag.name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Product Image -->
+            <div class="form-section full-width">
+              <h4 class="section-title">Product Image</h4>
+              
+              <div class="image-upload-area">
+                <input 
+                  ref="newProductImageInput"
+                  type="file" 
+                  class="hidden" 
+                  accept="image/*"
+                  @change="handleNewProductImageUpload"
+                >
+                
+                      <div v-if="newProduct.imagePreview || newProduct.image_url" class="product-preview-card">
+                        <div class="product-preview-wrapper">
+                          <img 
+                            :src="newProduct.imagePreview || newProduct.image_url" 
+                            class="product-preview-image"
+                          >
+                        </div>
+                        <div class="product-preview-info">
+                          <h4 class="product-preview-title">{{ newProduct.name || 'Product Name' }}</h4>
+                          <p class="product-preview-price">${{ newProduct.price ? (newProduct.price * 0.156).toFixed(2) : '0.00' }}</p>
+                        </div>
+                        <button 
+                          @click="removeNewProductImage" 
+                          class="image-remove-btn"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                          </svg>
+                        </button>
+                      </div>
+                
+                <div v-else class="upload-placeholder" @click="$refs.newProductImageInput.click()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <p class="upload-text">Click to upload product image</p>
+                  <p class="upload-hint">PNG, JPG, GIF up to 10MB</p>
+                </div>
+                
+                <div class="mt-3 flex gap-2">
+                  <input 
+                    v-model="newProduct.image_url" 
+                    class="input flex-1" 
+                    placeholder="Or enter image URL"
+                  >
+                  <button 
+                    @click="$refs.newProductImageInput.click()"
+                    class="btn btn-secondary"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Upload
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div class="mt-4 flex justify-between">
-        <button @click="addProductFormRow" class="btn btn-secondary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Add Another
-        </button>
-        <button @click="submitAllNewProducts" class="btn btn-primary" :disabled="newProducts.length === 0">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
-          Submit All
-        </button>
+        
+        <div class="modal-footer">
+          <button @click="closeAddProductModal" class="btn btn-secondary">
+            Cancel
+          </button>
+          <button @click="submitNewProduct" class="btn btn-primary" :disabled="saving">
+            <svg v-if="!saving" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span v-if="saving" class="mr-2">
+              <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
+            {{ saving ? 'Creating...' : 'Create Product' }}
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- Existing Products -->
     <div class="panel">
-      <div class="p-6 flex justify-between items-center border-b border-border-color">
-        <h3 class="font-semibold text-lg">Existing Products</h3>
-        <div class="w-64">
+      <div class="p-6 border-b border-border-color">
+        <div class="flex justify-between items-center gap-4" style="position: relative; overflow: visible;">
+          <h3 class="font-semibold text-lg flex-shrink-0">Existing Products</h3>
+          
+          <!-- Filters -->
+          <div class="filters-container flex-1">
+          <div class="filter-group">
+            <div class="filter-dropdown" @click="toggleFilterDropdown('brand')" ref="brandFilterRef">
+              <div class="filter-selected">
+                <span :class="{ 'placeholder': !selectedBrandFilter }">
+                  {{ selectedBrandFilter ? getBrandName(selectedBrandFilter) : 'All Brands' }}
+                </span>
+                <svg 
+                  class="filter-arrow" 
+                  :class="{ 'open': activeFilter === 'brand' }"
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="14" 
+                  height="14" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="2" 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <transition name="dropdown">
+                <div v-if="activeFilter === 'brand'" class="filter-menu">
+                  <div class="filter-options">
+                    <div 
+                      class="filter-option"
+                      :class="{ 'selected': !selectedBrandFilter }"
+                      @click.stop="selectFilter('brand', null)"
+                    >
+                      <span>All Brands</span>
+                      <svg v-if="!selectedBrandFilter" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                    <div 
+                      v-for="brand in brands" 
+                      :key="brand.id"
+                      class="filter-option"
+                      :class="{ 'selected': selectedBrandFilter === brand.id }"
+                      @click.stop="selectFilter('brand', brand.id)"
+                    >
+                      <span>{{ brand.name }}</span>
+                      <svg v-if="selectedBrandFilter === brand.id" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </transition>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <div class="filter-dropdown" @click="toggleFilterDropdown('category')" ref="categoryFilterRef">
+              <div class="filter-selected">
+                <span :class="{ 'placeholder': !selectedCategoryFilter }">
+                  {{ selectedCategoryFilter || 'All Categories' }}
+                </span>
+                <svg 
+                  class="filter-arrow" 
+                  :class="{ 'open': activeFilter === 'category' }"
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="14" 
+                  height="14" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="2" 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <transition name="dropdown">
+                <div v-if="activeFilter === 'category'" class="filter-menu">
+                  <div class="filter-options">
+                    <div 
+                      class="filter-option"
+                      :class="{ 'selected': !selectedCategoryFilter }"
+                      @click.stop="selectFilter('category', null)"
+                    >
+                      <span>All Categories</span>
+                      <svg v-if="!selectedCategoryFilter" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                    <div 
+                      v-for="cat in categories" 
+                      :key="cat.link_text"
+                      class="filter-option"
+                      :class="{ 'selected': selectedCategoryFilter === cat.link_text }"
+                      @click.stop="selectFilter('category', cat.link_text)"
+                    >
+                      <span>{{ cat.link_text }}</span>
+                      <svg v-if="selectedCategoryFilter === cat.link_text" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </transition>
+            </div>
+          </div>
+          
+          <div class="filter-group">
+            <div class="filter-dropdown" @click="toggleFilterDropdown('tag')" ref="tagFilterRef">
+              <div class="filter-selected">
+                <span :class="{ 'placeholder': !selectedTagFilter }">
+                  {{ selectedTagFilter || 'All Tags' }}
+                </span>
+                <svg 
+                  class="filter-arrow" 
+                  :class="{ 'open': activeFilter === 'tag' }"
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="14" 
+                  height="14" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  stroke-width="2" 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round"
+                >
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <transition name="dropdown">
+                <div v-if="activeFilter === 'tag'" class="filter-menu">
+                  <div class="filter-options">
+                    <div 
+                      class="filter-option"
+                      :class="{ 'selected': !selectedTagFilter }"
+                      @click.stop="selectFilter('tag', null)"
+                    >
+                      <span>All Tags</span>
+                      <svg v-if="!selectedTagFilter" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                    <div 
+                      v-for="tag in tags" 
+                      :key="tag.name"
+                      class="filter-option"
+                      :class="{ 'selected': selectedTagFilter === tag.name }"
+                      @click.stop="selectFilter('tag', tag.name)"
+                    >
+                      <span>{{ tag.name }}</span>
+                      <svg v-if="selectedTagFilter === tag.name" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </transition>
+            </div>
+          </div>
+          
+          <button v-if="hasActiveFilters" @click="clearAllFilters" class="clear-filters-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            Clear
+          </button>
+          </div>
+          
+          <div class="w-64 flex-shrink-0">
           <input 
             type="text" 
             v-model="searchQuery"
@@ -129,6 +507,7 @@
             class="input" 
             placeholder="Search by name..."
           >
+        </div>
         </div>
       </div>
       
@@ -146,7 +525,7 @@
         </div>
       </div>
       
-      <div class="overflow-x-auto">
+      <div class="table-container">
         <table class="w-full text-sm text-left">
           <thead class="text-xs text-text-secondary uppercase bg-bg-surface">
             <tr>
@@ -213,73 +592,113 @@
                 </div>
               </td>
               <td class="p-4">
-                <select 
-                  :value="product.brand_id || ''"
-                  @change="(e) => updateProductField(product.id, 'brand_id', e.target.value || null)"
-                  class="input text-sm"
-                >
-                  <option value="">None</option>
-                  <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
-                </select>
-              </td>
-              <td class="p-4">
-                <div class="custom-dropdown">
+                <div class="table-dropdown">
                   <button 
-                    @click="toggleDropdown(product.id, 'category')"
-                    class="input text-left text-sm truncate w-full"
+                    @click="toggleDropdown(product.id, 'brand')"
+                    class="table-dropdown-btn"
                   >
-                    {{ getCategoryDisplay(product.category) }}
+                    <span class="table-dropdown-text">{{ product.brands?.name || 'None' }}</span>
+                    <svg class="table-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
                   </button>
                   <div 
-                    v-if="activeDropdown.id === product.id && activeDropdown.type === 'category'"
-                    class="dropdown-menu active"
+                    v-if="activeDropdown.id === product.id && activeDropdown.type === 'brand'"
+                    class="table-dropdown-menu"
                   >
-                    <div class="p-2 space-y-1 max-h-48 overflow-y-auto">
-                      <label 
-                        v-for="cat in categories" 
-                        :key="cat.link_text"
-                        class="dropdown-item flex items-center gap-2 p-2 hover:bg-bg-card rounded cursor-pointer"
+                    <div class="table-dropdown-options">
+                      <div 
+                        class="table-dropdown-option"
+                        :class="{ 'selected': !product.brand_id }"
+                        @click="updateProductField(product.id, 'brand_id', null)"
                       >
-                        <input 
-                          type="checkbox" 
-                          :value="cat.link_text"
-                          :checked="isInList(product.category, cat.link_text)"
-                          @change="(e) => updateMultiSelect(product.id, 'category', cat.link_text, e.target.checked)"
-                          class="rounded border-border-color"
-                        >
-                        <span class="text-sm">{{ cat.link_text }}</span>
-                      </label>
+                        <span>None</span>
+                        <svg v-if="!product.brand_id" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <div 
+                        v-for="brand in brands" 
+                        :key="brand.id"
+                        class="table-dropdown-option"
+                        :class="{ 'selected': product.brand_id === brand.id }"
+                        @click="updateProductField(product.id, 'brand_id', brand.id)"
+                      >
+                        <span>{{ brand.name }}</span>
+                        <svg v-if="product.brand_id === brand.id" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
                     </div>
                   </div>
                 </div>
               </td>
               <td class="p-4">
-                <div class="custom-dropdown">
+                <div class="table-dropdown">
                   <button 
-                    @click="toggleDropdown(product.id, 'tags')"
-                    class="input text-left text-sm truncate w-full"
+                    @click="toggleDropdown(product.id, 'category')"
+                    class="table-dropdown-btn"
                   >
-                    {{ getTagsDisplay(product.tags) }}
+                    <span class="table-dropdown-text">{{ getCategoryDisplay(product.category) }}</span>
+                    <svg class="table-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
                   </button>
                   <div 
-                    v-if="activeDropdown.id === product.id && activeDropdown.type === 'tags'"
-                    class="dropdown-menu active"
+                    v-if="activeDropdown.id === product.id && activeDropdown.type === 'category'"
+                    class="table-dropdown-menu"
                   >
-                    <div class="p-2 space-y-1 max-h-48 overflow-y-auto">
-                      <label 
-                        v-for="tag in tags" 
-                        :key="tag.name"
-                        class="dropdown-item flex items-center gap-2 p-2 hover:bg-bg-card rounded cursor-pointer"
+                    <div class="table-dropdown-options">
+                      <div 
+                        v-for="cat in categories" 
+                        :key="cat.link_text"
+                        class="table-dropdown-option"
+                        :class="{ 'selected': isInList(product.category, cat.link_text) }"
+                        @click="updateMultiSelect(product.id, 'category', cat.link_text, !isInList(product.category, cat.link_text))"
                       >
                         <input 
                           type="checkbox" 
-                          :value="tag.name"
-                          :checked="isInList(product.tags, tag.name)"
-                          @change="(e) => updateMultiSelect(product.id, 'tags', tag.name, e.target.checked)"
-                          class="rounded border-border-color"
+                          :checked="isInList(product.category, cat.link_text)"
+                          class="table-dropdown-checkbox"
+                          @click.stop
                         >
-                        <span class="text-sm">{{ tag.name }}</span>
-                      </label>
+                        <span>{{ cat.link_text }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td class="p-4">
+                <div class="table-dropdown">
+                  <button 
+                    @click="toggleDropdown(product.id, 'tags')"
+                    class="table-dropdown-btn"
+                  >
+                    <span class="table-dropdown-text">{{ getTagsDisplay(product.tags) }}</span>
+                    <svg class="table-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+                  <div 
+                    v-if="activeDropdown.id === product.id && activeDropdown.type === 'tags'"
+                    class="table-dropdown-menu"
+                  >
+                    <div class="table-dropdown-options">
+                      <div 
+                        v-for="tag in tags" 
+                        :key="tag.name"
+                        class="table-dropdown-option"
+                        :class="{ 'selected': isInList(product.tags, tag.name) }"
+                        @click="updateMultiSelect(product.id, 'tags', tag.name, !isInList(product.tags, tag.name))"
+                      >
+                        <input 
+                          type="checkbox" 
+                          :checked="isInList(product.tags, tag.name)"
+                          class="table-dropdown-checkbox"
+                          @click.stop
+                        >
+                        <span>{{ tag.name }}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -378,117 +797,231 @@
     </div>
     
     <!-- Edit Modal -->
-    <div v-if="editingProduct" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="closeEditModal">
-      <div class="panel w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-        <div class="p-6 border-b border-border-color flex justify-between items-center sticky top-0 bg-bg-surface z-10">
-          <h3 class="text-lg font-semibold">Edit Product</h3>
-          <button @click="closeEditModal" class="p-1 rounded-full hover:bg-gray-700">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-gray-400">
+    <div v-if="editingProduct" class="modal-overlay" @click.self="closeEditModal">
+      <div class="modal-container">
+        <div class="modal-header">
+          <div class="flex items-center gap-3">
+            <div class="modal-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="modal-title">Edit Product</h3>
+            </div>
+          </div>
+          <button @click="closeEditModal" class="modal-close-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
         </div>
+
         
-        <div class="p-6 space-y-6">
-          <div>
-            <label class="label">Product Name</label>
-            <input v-model="editingProduct.name" class="input mt-1">
-          </div>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="label">Price (¥)</label>
-              <input type="number" step="0.01" v-model="editingProduct.price" class="input mt-1">
-            </div>
-            <div>
-              <label class="label">Brand</label>
-              <select v-model="editingProduct.brand_id" class="input mt-1">
-                <option value="">-- No Brand --</option>
-                <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
-              </select>
-            </div>
-          </div>
-          
-          <div>
-            <label class="label">Target URL</label>
-            <input v-model="editingProduct.target_url" class="input mt-1">
-          </div>
-          
-          <div>
-            <label class="label">Image</label>
-            <div class="mt-2 flex items-start gap-4">
-              <div v-if="editingProduct.image_url && !editImageFile" class="relative">
-                <img :src="editingProduct.image_url" class="w-32 h-32 object-cover rounded">
-                <button 
-                  @click="editingProduct.image_url = ''"
-                  class="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  </svg>
-                </button>
+        <div class="modal-body">
+          <div class="form-grid">
+            <!-- Left Column: Basic Information -->
+            <div class="form-section">
+              <h4 class="section-title">Basic Information</h4>
+              
+              <div class="form-group">
+                <label class="form-label">Product Name <span class="required">*</span></label>
+                <input v-model="editingProduct.name" class="input" placeholder="Enter product name">
               </div>
-              <div v-if="editImageFile" class="relative">
-                <img :src="editImagePreview" class="w-32 h-32 object-cover rounded">
-                <button 
-                  @click="editImageFile = null; editImagePreview = ''"
-                  class="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Price (¥) <span class="required">*</span></label>
+                  <input type="number" step="0.01" v-model="editingProduct.price" class="input input-number" placeholder="0.00">
+                </div>
+                
+                <div class="form-group">
+                  <label class="form-label">Brand</label>
+                  <div class="custom-dropdown" @click="toggleEditBrandDropdown" ref="editBrandDropdownRef">
+                    <div class="dropdown-selected">
+                      <span :class="{ 'placeholder': !editingProduct.brand_id }">
+                        {{ editingProduct.brand_id ? getBrandName(editingProduct.brand_id) : '-- No Brand --' }}
+                      </span>
+                      <svg 
+                        class="dropdown-arrow" 
+                        :class="{ 'open': isEditBrandDropdownOpen }"
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        stroke-width="2" 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                      </svg>
+                    </div>
+                    <transition name="dropdown">
+                      <div v-if="isEditBrandDropdownOpen" class="dropdown-menu">
+                        <div class="dropdown-search">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                          </svg>
+                          <input 
+                            v-model="editBrandSearchQuery"
+                            type="text" 
+                            placeholder="Search brands..."
+                            @click.stop
+                          >
+                        </div>
+                        <div class="dropdown-options">
+                          <div 
+                            class="dropdown-option"
+                            :class="{ 'selected': !editingProduct.brand_id }"
+                            @click.stop="selectEditBrand('')"
+                          >
+                            <span>-- No Brand --</span>
+                            <svg v-if="!editingProduct.brand_id" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                          </div>
+                          <div 
+                            v-for="brand in filteredEditBrands" 
+                            :key="brand.id"
+                            class="dropdown-option"
+                            :class="{ 'selected': editingProduct.brand_id === brand.id }"
+                            @click.stop="selectEditBrand(brand.id)"
+                          >
+                            <span>{{ brand.name }}</span>
+                            <svg v-if="editingProduct.brand_id === brand.id" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </transition>
+                  </div>
+                </div>
               </div>
-              <div class="flex-1">
-                <input v-model="editingProduct.image_url" class="input" placeholder="Image URL" @input="editImageFile = null">
-                <div class="mt-2">
-                  <label class="btn btn-secondary text-sm cursor-pointer inline-flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+              
+              <div class="form-group">
+                <label class="form-label">Target URL <span class="required">*</span></label>
+                <input v-model="editingProduct.target_url" class="input">
+              </div>
+            </div>
+            
+            <!-- Right Column: Categories & Tags -->
+            <div class="form-section">
+              <h4 class="section-title">Categories & Tags</h4>
+              
+              <div class="form-group">
+                <label class="form-label">Categories</label>
+                <div class="checkbox-grid">
+                  <div 
+                    v-for="cat in categories" 
+                    :key="cat.link_text"
+                    class="checkbox-item"
+                    @click="toggleEditCategory(cat.link_text)"
+                  >
+                    <input 
+                      type="checkbox" 
+                      :checked="isInList(editingProduct.category, cat.link_text)"
+                      class="checkbox-input"
+                      @click.stop="toggleEditCategory(cat.link_text)"
+                    >
+                    <span class="checkbox-label">{{ cat.link_text }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Tags</label>
+                <div class="checkbox-grid">
+                  <div 
+                    v-for="tag in tags" 
+                    :key="tag.name"
+                    class="checkbox-item"
+                    @click="toggleEditTag(tag.name, !isInList(editingProduct.tags, tag.name))"
+                  >
+                    <input 
+                      type="checkbox" 
+                      :checked="isInList(editingProduct.tags, tag.name)"
+                      class="checkbox-input"
+                      @click.stop="toggleEditTag(tag.name, !isInList(editingProduct.tags, tag.name))"
+                    >
+                    <span class="checkbox-label">{{ tag.name }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Product Image -->
+            <div class="form-section full-width">
+              <h4 class="section-title">Product Image</h4>
+              
+              <div class="image-upload-area">
+                <input type="file" accept="image/*" class="hidden" @change="handleEditImageUpload" ref="editImageInput">
+                
+                <div v-if="editImagePreview || editingProduct.image_url" class="product-preview-card">
+                  <div class="product-preview-wrapper">
+                    <img :src="editImagePreview || editingProduct.image_url" class="product-preview-image">
+                  </div>
+                  <div class="product-preview-info">
+                    <h4 class="product-preview-title">{{ editingProduct.name || 'Product Name' }}</h4>
+                    <p class="product-preview-price">${{ editingProduct.price ? (editingProduct.price * 0.156).toFixed(2) : '0.00' }}</p>
+                  </div>
+                  <button 
+                    @click="editImageFile = null; editImagePreview = ''; editingProduct.image_url = ''"
+                    class="image-remove-btn"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+                
+                <div v-else class="upload-placeholder" @click="$refs.editImageInput.click()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  <p class="upload-text">Click to upload product image</p>
+                  <p class="upload-hint">PNG, JPG, GIF up to 10MB</p>
+                </div>
+                
+                <div class="mt-3 flex gap-2">
+                  <input v-model="editingProduct.image_url" class="input flex-1" placeholder="Or enter image URL" @input="editImageFile = null">
+                  <button @click="$refs.editImageInput.click()" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                       <polyline points="17 8 12 3 7 8"></polyline>
                       <line x1="12" y1="3" x2="12" y2="15"></line>
                     </svg>
-                    Upload Image
-                    <input type="file" accept="image/*" class="hidden" @change="handleEditImageUpload">
-                  </label>
-                  <p v-if="editImageFile" class="text-xs text-green-400 mt-1">{{ editImageFile.name }}</p>
+                    Upload
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-          
-          <div>
-            <label class="label">Category</label>
-            <input v-model="editingProduct.category" class="input mt-1" placeholder="e.g., Shoes, Accessories">
-          </div>
-          
-          <div>
-            <label class="label">Tags</label>
-            <div class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
-              <label 
-                v-for="tag in tags" 
-                :key="tag.name"
-                class="flex items-center gap-2 p-2 bg-bg-card rounded cursor-pointer hover:bg-bg-main"
-              >
-                <input 
-                  type="checkbox" 
-                  :value="tag.name"
-                  :checked="isInList(editingProduct.tags, tag.name)"
-                  @change="(e) => toggleEditTag(tag.name, e.target.checked)"
-                  class="rounded border-border-color"
-                >
-                <span class="text-sm">{{ tag.name }}</span>
-              </label>
-            </div>
-          </div>
         </div>
+
         
-        <div class="p-4 bg-bg-main/50 rounded-b-lg text-right border-t border-border-color flex justify-end gap-2">
-          <button @click="closeEditModal" class="btn btn-secondary">Cancel</button>
+        <div class="modal-footer">
+          <button @click="closeEditModal" class="btn btn-secondary">
+            Cancel
+          </button>
           <button @click="saveProductChanges" class="btn btn-primary" :disabled="saving">
+            <svg v-if="!saving" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span v-if="saving" class="mr-2">
+              <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
             {{ saving ? 'Saving...' : 'Save Changes' }}
           </button>
         </div>
@@ -519,10 +1052,36 @@ const products = ref([])
 const brands = ref([])
 const categories = ref([])
 const tags = ref([])
-const newProducts = ref([])
+const showAddProductModal = ref(false)
+const newProduct = ref({
+  name: '',
+  price: '',
+  target_url: '',
+  image_url: '',
+  imageFile: null,
+  imagePreview: '',
+  brand_id: '',
+  selectedCategories: [],
+  selectedTags: []
+})
+const newProductImageInput = ref(null)
+const brandDropdownRef = ref(null)
+const isBrandDropdownOpen = ref(false)
+const brandSearchQuery = ref('')
 const editingProduct = ref(null)
+const brandFilterRef = ref(null)
+const categoryFilterRef = ref(null)
+const tagFilterRef = ref(null)
+const selectedBrandFilter = ref(null)
+const selectedCategoryFilter = ref(null)
+const selectedTagFilter = ref(null)
+const activeFilter = ref(null)
 const editImageFile = ref(null)
 const editImagePreview = ref('')
+const editImageInput = ref(null)
+const editBrandDropdownRef = ref(null)
+const isEditBrandDropdownOpen = ref(false)
+const editBrandSearchQuery = ref('')
 const searchQuery = ref('')
 const currentPage = ref(1)
 const pageSize = 50
@@ -536,13 +1095,48 @@ const selectAll = ref(false)
 const activeDropdown = ref({ id: null, type: null })
 const productTableBody = ref(null)
 const importFileInput = ref(null)
-const fileInputs = ref({})
 
 let sortableInstance = null
 let searchTimeout = null
 
 // Computed
 const totalPages = computed(() => Math.ceil(totalProducts.value / pageSize))
+
+// Custom dropdown computed properties
+const selectedBrandName = computed(() => {
+  if (!newProduct.value.brand_id) return ''
+  const brand = brands.value.find(b => b.id === newProduct.value.brand_id)
+  return brand ? brand.name : ''
+})
+
+const filteredBrands = computed(() => {
+  if (!brandSearchQuery.value.trim()) return brands.value
+  const query = brandSearchQuery.value.toLowerCase()
+  return brands.value.filter(brand => 
+    brand.name.toLowerCase().includes(query)
+  )
+})
+
+const filteredEditBrands = computed(() => {
+  if (!editBrandSearchQuery.value.trim()) return brands.value
+  const query = editBrandSearchQuery.value.toLowerCase()
+  return brands.value.filter(brand => 
+    brand.name.toLowerCase().includes(query)
+  )
+})
+
+// Filter computed properties
+const hasActiveFilters = computed(() => {
+  return selectedBrandFilter.value !== null || 
+         selectedCategoryFilter.value !== null || 
+         selectedTagFilter.value !== null
+})
+
+const getBrandName = (brandId) => {
+  const brand = brands.value.find(b => b.id === brandId)
+  return brand ? brand.name : 'Unknown'
+}
+
 const visiblePages = computed(() => {
   const pages = []
   const start = Math.max(1, currentPage.value - 2)
@@ -621,8 +1215,24 @@ const loadProducts = async (page = 1) => {
       .select('*, brands(*)', { count: 'exact' })
       .eq('is_active', true)
     
+    // Apply search filter
     if (searchQuery.value) {
       query = query.ilike('name', `%${searchQuery.value}%`)
+    }
+    
+    // Apply brand filter
+    if (selectedBrandFilter.value) {
+      query = query.eq('brand_id', selectedBrandFilter.value)
+    }
+    
+    // Apply category filter
+    if (selectedCategoryFilter.value) {
+      query = query.ilike('category', `%${selectedCategoryFilter.value}%`)
+    }
+    
+    // Apply tag filter
+    if (selectedTagFilter.value) {
+      query = query.ilike('tags', `%${selectedTagFilter.value}%`)
     }
     
     const { data, error, count } = await query
@@ -636,7 +1246,9 @@ const loadProducts = async (page = 1) => {
     
     // Reinitialize sortable after products load
     await nextTick()
-    initSortable()
+    setTimeout(() => {
+      initSortable()
+    }, 100)
   } catch (error) {
     console.error('Error loading products:', error)
     showMessage('Failed to load products', 'error')
@@ -646,43 +1258,64 @@ const loadProducts = async (page = 1) => {
 }
 
 const initSortable = () => {
-  if (sortableInstance) {
-    sortableInstance.destroy()
-  }
-  
-  if (productTableBody.value && products.value.length > 0) {
-    sortableInstance = new Sortable(productTableBody.value, {
-      animation: 150,
-      handle: '.drag-handle',
-      ghostClass: 'sortable-ghost',
-      onEnd: saveProductOrder
-    })
+  try {
+    if (sortableInstance) {
+      sortableInstance.destroy()
+      sortableInstance = null
+    }
+    
+    if (productTableBody.value && products.value.length > 0) {
+      sortableInstance = new Sortable(productTableBody.value, {
+        animation: 150,
+        handle: '.drag-handle',
+        ghostClass: 'sortable-ghost',
+        onEnd: saveProductOrder
+      })
+    }
+  } catch (error) {
+    console.error('Error initializing sortable:', error)
   }
 }
 
 const saveProductOrder = async (evt) => {
-  loading.value = true
+  const { oldIndex, newIndex } = evt
+  
+  // If no movement, do nothing
+  if (oldIndex === newIndex) {
+    return
+  }
   
   try {
+    // Update the local products array to reflect the new order
+    const movedProduct = products.value.splice(oldIndex, 1)[0]
+    products.value.splice(newIndex, 0, movedProduct)
+    
+    // Calculate the affected range
+    const startIndex = Math.min(oldIndex, newIndex)
+    const endIndex = Math.max(oldIndex, newIndex)
+    
     const db = await getAuthenticatedClient()
-    const reorderedIds = Array.from(evt.to.children)
-      .filter(el => el.dataset.id)
-      .map(el => parseInt(el.dataset.id))
     
-    const updates = reorderedIds.map((id, index) => 
-      db.from('products')
-        .update({ display_order: index + ((currentPage.value - 1) * pageSize) })
-        .eq('id', id)
-    )
+    // Only update the products that were affected by the move
+    const updatePromises = []
+    for (let i = startIndex; i <= endIndex; i++) {
+      const product = products.value[i]
+      const newOrder = i + ((currentPage.value - 1) * pageSize)
+      
+      updatePromises.push(
+        db.from('products')
+          .update({ display_order: newOrder })
+          .eq('id', product.id)
+      )
+    }
     
-    await Promise.all(updates)
+    await Promise.all(updatePromises)
     showMessage('Order saved!')
   } catch (error) {
     console.error('Error saving order:', error)
     showMessage('Reorder failed: ' + error.message, 'error')
+    // Reload to restore correct order
     await loadProducts(currentPage.value)
-  } finally {
-    loading.value = false
   }
 }
 
@@ -701,46 +1334,108 @@ const goToPage = (page) => {
 }
 
 // New product functions
-const setFileInput = (tempId, el) => {
-  if (el) {
-    fileInputs.value[tempId] = el
-  }
+// Add Product Modal Functions
+const openAddProductModal = () => {
+  showAddProductModal.value = true
 }
 
-const triggerFileInput = (tempId) => {
-  const input = fileInputs.value[tempId]
-  if (input) {
-    input.click()
-  }
-}
-
-const addProductFormRow = () => {
-  const tempId = `new_${Date.now()}`
-  newProducts.value.push({
-    tempId,
+const closeAddProductModal = () => {
+  showAddProductModal.value = false
+  // Reset form
+  newProduct.value = {
     name: '',
     price: '',
     target_url: '',
     image_url: '',
     imageFile: null,
-    imagePreview: null
-  })
-}
-
-const removeProductFormRow = (index) => {
-  const product = newProducts.value[index]
-  if (product && fileInputs.value[product.tempId]) {
-    delete fileInputs.value[product.tempId]
+    imagePreview: '',
+    brand_id: '',
+    selectedCategories: [],
+    selectedTags: []
   }
-  newProducts.value.splice(index, 1)
+  // Reset dropdown state
+  isBrandDropdownOpen.value = false
+  brandSearchQuery.value = ''
 }
 
-const handleNewProductImageUpload = (event, index) => {
+// Custom dropdown methods
+const toggleBrandDropdown = (event) => {
+  event.stopPropagation()
+  isBrandDropdownOpen.value = !isBrandDropdownOpen.value
+  if (!isBrandDropdownOpen.value) {
+    brandSearchQuery.value = ''
+  }
+}
+
+const selectBrand = (brandId) => {
+  newProduct.value.brand_id = brandId
+  isBrandDropdownOpen.value = false
+  brandSearchQuery.value = ''
+}
+
+// Toggle category and tag selection
+const toggleCategory = (categoryName) => {
+  const index = newProduct.value.selectedCategories.indexOf(categoryName)
+  if (index > -1) {
+    newProduct.value.selectedCategories.splice(index, 1)
+  } else {
+    newProduct.value.selectedCategories.push(categoryName)
+  }
+}
+
+const toggleTag = (tagName) => {
+  const index = newProduct.value.selectedTags.indexOf(tagName)
+  if (index > -1) {
+    newProduct.value.selectedTags.splice(index, 1)
+  } else {
+    newProduct.value.selectedTags.push(tagName)
+  }
+}
+
+// Filter dropdown functions
+const toggleFilterDropdown = (filterType) => {
+  if (activeFilter.value === filterType) {
+    activeFilter.value = null
+  } else {
+    activeFilter.value = filterType
+  }
+}
+
+const selectFilter = (filterType, value) => {
+  if (filterType === 'brand') {
+    selectedBrandFilter.value = value
+  } else if (filterType === 'category') {
+    selectedCategoryFilter.value = value
+  } else if (filterType === 'tag') {
+    selectedTagFilter.value = value
+  }
+  
+  activeFilter.value = null
+  loadProducts(1) // Reset to page 1 when filter changes
+}
+
+const clearAllFilters = () => {
+  selectedBrandFilter.value = null
+  selectedCategoryFilter.value = null
+  selectedTagFilter.value = null
+  loadProducts(1)
+}
+
+const handleNewProductImageUpload = (event) => {
   const file = event.target.files[0]
   if (file) {
-    newProducts.value[index].imageFile = file
-    newProducts.value[index].imagePreview = URL.createObjectURL(file)
-    newProducts.value[index].image_url = ''
+    newProduct.value.imageFile = file
+    newProduct.value.imagePreview = URL.createObjectURL(file)
+    newProduct.value.image_url = ''
+  }
+}
+
+const removeNewProductImage = () => {
+  newProduct.value.imageFile = null
+  newProduct.value.imagePreview = ''
+  newProduct.value.image_url = ''
+  if (newProductImageInput.value) {
+    newProductImageInput.value.value = ''
   }
 }
 
@@ -756,59 +1451,64 @@ const uploadImage = async (file, bucket = 'product-images') => {
   return publicUrl
 }
 
-const submitAllNewProducts = async () => {
-  if (newProducts.value.length === 0) {
-    showMessage('No products to add', 'error')
+const submitNewProduct = async () => {
+  // Validate
+  if (!newProduct.value.name || !newProduct.value.price || !newProduct.value.target_url) {
+    showMessage('Please fill in required fields (Name, Price, URL)', 'error')
     return
   }
   
-  // Validate
-  for (const product of newProducts.value) {
-    if (!product.name || !product.price || !product.target_url) {
-      showMessage('Please fill in required fields (Name, Price, URL) for all products', 'error')
-      return
-    }
-  }
-  
-  loading.value = true
+  saving.value = true
   
   try {
     const db = await getAuthenticatedClient()
-    const { count } = await db.from('products').select('*', { count: 'exact', head: true })
-    let currentOrder = count || 0
     
-    const productsToUpload = []
+    // Get the minimum display_order to insert new product at the top
+    const { data: minData } = await db
+      .from('products')
+      .select('display_order')
+      .order('display_order', { ascending: true })
+      .limit(1)
     
-    for (const product of newProducts.value) {
-      let imageUrl = product.image_url
-      
-      if (product.imageFile) {
-        imageUrl = await uploadImage(product.imageFile)
-      }
-      
-      productsToUpload.push({
-        name: product.name,
-        price: parseFloat(product.price),
-        target_url: product.target_url,
-        image_url: imageUrl,
-        display_order: currentOrder++,
-        is_active: true
-      })
+    const minOrder = minData && minData.length > 0 ? minData[0].display_order : 0
+    const newDisplayOrder = minOrder - 1  // Place new product before the current first one
+    
+    let imageUrl = newProduct.value.image_url
+    
+    if (newProduct.value.imageFile) {
+      imageUrl = await uploadImage(newProduct.value.imageFile)
     }
     
-    const { error } = await db.from('products').insert(productsToUpload)
+    // Prepare product data - new product gets the lowest display_order (top of list)
+    const productData = {
+      name: newProduct.value.name,
+      price: parseFloat(newProduct.value.price),
+      target_url: newProduct.value.target_url,
+      image_url: imageUrl,
+      brand_id: newProduct.value.brand_id || null,
+      category: newProduct.value.selectedCategories.join(','),
+      tags: newProduct.value.selectedTags.join(','),
+      display_order: newDisplayOrder,
+      is_active: true
+    }
+    
+    const { error } = await db.from('products').insert([productData])
     
     if (error) throw error
     
-    showMessage(`Successfully added ${productsToUpload.length} new products!`)
-    newProducts.value = []
-    addProductFormRow()
-    loadProducts(currentPage.value)
+    showMessage('Product added successfully!')
+    closeAddProductModal()
+    // Wait for modal to close before reloading products
+    // Always go to first page to see the new product at the top
+    await nextTick()
+    setTimeout(() => {
+      loadProducts(1)
+    }, 300)
   } catch (error) {
-    console.error('Error adding products:', error)
-    showMessage('Bulk add failed: ' + error.message, 'error')
+    console.error('Error adding product:', error)
+    showMessage('Failed to add product: ' + error.message, 'error')
   } finally {
-    loading.value = false
+    saving.value = false
   }
 }
 
@@ -823,6 +1523,8 @@ const closeEditModal = () => {
   editingProduct.value = null
   editImageFile.value = null
   editImagePreview.value = ''
+  isEditBrandDropdownOpen.value = false
+  editBrandSearchQuery.value = ''
 }
 
 const handleEditImageUpload = (event) => {
@@ -832,6 +1534,34 @@ const handleEditImageUpload = (event) => {
     editImagePreview.value = URL.createObjectURL(file)
     editingProduct.value.image_url = ''
   }
+}
+
+// Edit modal dropdown functions
+const toggleEditBrandDropdown = (event) => {
+  event.stopPropagation()
+  isEditBrandDropdownOpen.value = !isEditBrandDropdownOpen.value
+  if (!isEditBrandDropdownOpen.value) {
+    editBrandSearchQuery.value = ''
+  }
+}
+
+const selectEditBrand = (brandId) => {
+  editingProduct.value.brand_id = brandId
+  isEditBrandDropdownOpen.value = false
+  editBrandSearchQuery.value = ''
+}
+
+const toggleEditCategory = (categoryName) => {
+  const currentCategories = editingProduct.value.category ? editingProduct.value.category.split(',').map(c => c.trim()).filter(c => c) : []
+  const index = currentCategories.indexOf(categoryName)
+  
+  if (index > -1) {
+    currentCategories.splice(index, 1)
+  } else {
+    currentCategories.push(categoryName)
+  }
+  
+  editingProduct.value.category = currentCategories.join(',')
 }
 
 const toggleEditTag = (tagName, checked) => {
@@ -958,6 +1688,20 @@ const updateProductField = async (productId, field, value) => {
     const product = products.value.find(p => p.id === productId)
     if (product) {
       product[field] = value
+      
+      // 如果更新的是 brand_id，同时更新关联的 brands 对象
+      if (field === 'brand_id') {
+        if (value) {
+          const brand = brands.value.find(b => b.id === value)
+          product.brands = brand || null
+          showMessage('Brand updated successfully', 'success')
+        } else {
+          product.brands = null
+          showMessage('Brand removed successfully', 'success')
+        }
+        // 关闭下拉菜单
+        activeDropdown.value = { id: null, type: null }
+      }
     }
   } catch (error) {
     console.error('Error updating field:', error)
@@ -998,7 +1742,26 @@ const updateMultiSelect = async (productId, field, value, checked) => {
   }
   
   const newValue = currentList.join(',')
-  await updateProductField(productId, field, newValue)
+  
+  try {
+    const db = await getAuthenticatedClient()
+    const { error } = await db
+      .from('products')
+      .update({ [field]: newValue })
+      .eq('id', productId)
+    
+    if (error) throw error
+    
+    // 更新本地数据
+    product[field] = newValue
+    
+    const fieldName = field === 'category' ? 'Category' : 'Tags'
+    showMessage(`${fieldName} updated successfully`, 'success')
+  } catch (error) {
+    console.error('Error updating field:', error)
+    showMessage('Update failed: ' + error.message, 'error')
+    loadProducts(currentPage.value)
+  }
 }
 
 const getCategoryDisplay = (category) => {
@@ -1178,7 +1941,26 @@ const exportProducts = async () => {
 
 // Close dropdown when clicking outside
 const handleClickOutside = (event) => {
-  if (!event.target.closest('.custom-dropdown')) {
+  // Handle brand dropdown in add product modal
+  if (brandDropdownRef.value && !brandDropdownRef.value.contains(event.target)) {
+    isBrandDropdownOpen.value = false
+    brandSearchQuery.value = ''
+  }
+  
+  // Handle brand dropdown in edit product modal
+  if (editBrandDropdownRef.value && !editBrandDropdownRef.value.contains(event.target)) {
+    isEditBrandDropdownOpen.value = false
+    editBrandSearchQuery.value = ''
+  }
+  
+  // Handle filter dropdowns
+  const clickedOnFilterDropdown = event.target.closest('.filter-dropdown')
+  if (!clickedOnFilterDropdown && activeFilter.value) {
+    activeFilter.value = null
+  }
+  
+  // Handle other dropdowns (table dropdowns and custom dropdowns)
+  if (!event.target.closest('.custom-dropdown') && !event.target.closest('.table-dropdown')) {
     activeDropdown.value = { id: null, type: null }
   }
 }
@@ -1191,7 +1973,6 @@ onMounted(async () => {
     loadTags()
   ])
   await loadProducts(1)
-  addProductFormRow()
 })
 
 onBeforeUnmount(() => {
@@ -1203,138 +1984,531 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.panel {
+/* === Page Header === */
+.page-header {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.label {
-  font-weight: 500;
-  font-size: 0.875rem;
+/* === Stats Card Inline === */
+.stat-card-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 0.625rem;
+  transition: all 0.2s ease;
+  height: 2.375rem; /* Match button height */
+}
+
+.stat-card-inline:hover {
+  border-color: var(--accent-red);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon-small {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 0.375rem;
+  color: var(--accent-red);
+}
+
+.stat-text-horizontal {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.stat-label-inline {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value-inline {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* === Panel === */
+.panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  overflow: visible;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.panel > div:first-child {
+  overflow: visible;
+}
+
+/* === Filters === */
+.filters-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  min-width: 150px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.filter-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-dropdown {
+  position: relative;
+  cursor: pointer;
+}
+
+.filter-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  font-size: 0.8125rem;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.filter-selected:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.filter-selected .placeholder {
   color: var(--text-secondary);
 }
 
-.input {
+.filter-arrow {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.filter-arrow.open {
+  transform: rotate(180deg);
+  color: var(--accent-red);
+}
+
+.filter-selected:hover .filter-arrow {
+  color: var(--accent-red);
+}
+
+.filter-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  min-width: 200px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.filter-options {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.filter-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.filter-options::-webkit-scrollbar-track {
+  background: rgba(20, 20, 25, 0.4);
+}
+
+.filter-options::-webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.5);
+  border-radius: 3px;
+}
+
+.filter-options::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.7);
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.filter-option:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.filter-option.selected {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+  color: var(--accent-red);
+  font-weight: 600;
+}
+
+.filter-option svg {
+  color: var(--accent-red);
+  flex-shrink: 0;
+}
+
+.clear-filters-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1.5px solid var(--accent-red);
+  border-radius: 0.5rem;
+  color: var(--accent-red);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.clear-filters-btn:hover {
+  background: var(--accent-red);
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.clear-filters-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* === Product Table === */
+.table-container {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+table {
+  position: relative;
+}
+
+table tbody {
+  position: relative;
+  overflow: visible;
+}
+
+table tbody tr {
+  position: relative;
+  overflow: visible;
+}
+
+.product-row {
+  transition: all 0.2s ease;
+}
+
+.product-row:hover {
+  background: rgba(239, 68, 68, 0.05) !important;
+}
+
+.product-row td {
+  vertical-align: middle;
+  position: relative;
+  overflow: visible;
+}
+
+.product-row img {
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease;
+}
+
+.product-row img:hover {
+  transform: scale(2.5);
+  z-index: 10;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  border-color: var(--accent-red);
+}
+
+/* === Table Dropdowns === */
+.table-dropdown {
+  position: relative;
+}
+
+.table-dropdown-btn {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+.table-dropdown-btn:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(30, 30, 35, 0.8);
+}
+
+.table-dropdown-text {
+  flex: 1;
+  text-align: left;
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-dropdown-arrow {
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.table-dropdown-btn:hover .table-dropdown-arrow {
+  color: var(--accent-red);
+}
+
+.table-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  min-width: 180px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.table-dropdown-options {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.table-dropdown-options::-webkit-scrollbar {
+  width: 5px;
+}
+
+.table-dropdown-options::-webkit-scrollbar-track {
+  background: rgba(20, 20, 25, 0.4);
+}
+
+.table-dropdown-options::-webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.5);
+  border-radius: 3px;
+}
+
+.table-dropdown-options::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.7);
+}
+
+.table-dropdown-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+}
+
+.table-dropdown-option:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.table-dropdown-option.selected {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+  color: var(--accent-red);
+  font-weight: 600;
+}
+
+.table-dropdown-option svg {
+  color: var(--accent-red);
+  flex-shrink: 0;
+}
+
+.table-dropdown-option span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table-dropdown-checkbox {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  accent-color: var(--accent-red);
+  flex-shrink: 0;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  display: block;
+}
+
+/* === Inputs === */
+.input {
+  width: 100%;
+  border: 1.5px solid var(--border-color);
+  border-radius: 0.625rem;
+  padding: 0.75rem 1rem;
   transition: all 0.2s ease;
   background-color: var(--bg-card);
   color: var(--text-primary);
+  font-size: 0.9375rem;
 }
 
 .input:focus {
   outline: none;
   border-color: var(--accent-red);
-  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
+.input:hover:not(:focus) {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* === Buttons === */
 .btn, .btn-icon {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.625rem;
   font-weight: 600;
+  font-size: 0.9375rem;
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-icon {
-  padding: 0.5rem;
+  padding: 0.625rem;
 }
 
 .btn-xs {
-  padding: 0.25rem 0.75rem;
-  font-size: 0.75rem;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.8125rem;
+}
+
+.btn-compact {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
 }
 
 .btn:disabled {
-  background-color: #222 !important;
-  color: #666;
+  background-color: rgba(50, 50, 50, 0.5) !important;
+  color: rgba(255, 255, 255, 0.3);
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .btn-primary {
   background-color: var(--accent-red);
-  color: var(--text-primary);
+  color: white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
   background-color: var(--accent-red-hover);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
 }
 
 .btn-secondary {
-  background-color: transparent;
+  background-color: var(--bg-card);
   color: var(--text-primary);
   border-color: var(--border-color);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: var(--bg-card);
-  border-color: #555;
+  background-color: var(--bg-surface);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-secondary.active {
   background-color: var(--accent-red);
   border-color: var(--accent-red);
+  color: white;
 }
 
-.editable-cell {
-  cursor: pointer;
-}
-
-.editable-cell:hover {
-  background-color: var(--bg-card);
-}
-
-.custom-dropdown {
-  position: relative;
-}
-
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 50;
-  margin-top: 0.5rem;
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  min-width: 200px;
-  max-width: 300px;
-}
-
-.dropdown-menu.active {
-  display: block;
-}
-
-.dropdown-item {
-  transition: background-color 0.2s ease;
-}
-
-.sortable-ghost {
-  opacity: 0.4;
-  background-color: var(--bg-card);
-}
-
+/* === Table === */
 table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
 }
 
 table thead {
-  background-color: var(--bg-surface);
+  background-color: var(--bg-card);
   color: var(--text-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+table thead th {
+  padding: 1rem;
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 2px solid var(--border-color);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 table tbody tr {
   border-bottom: 1px solid var(--border-color);
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 table tbody tr:last-child {
@@ -1342,36 +2516,761 @@ table tbody tr:last-child {
 }
 
 table tbody tr:hover {
-  background-color: var(--bg-card);
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
+table tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+  position: relative;
+  overflow: visible;
+}
+
+/* === Editable Cells === */
+.editable-cell {
+  cursor: pointer;
+  position: relative;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.editable-cell:hover {
+  background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* === Sortable === */
+.sortable-ghost {
+  opacity: 0.5;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 2px dashed var(--accent-red);
+}
+
+.drag-handle {
+  cursor: grab;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+}
+
+.drag-handle:hover {
+  color: var(--accent-red);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* === Add Product Form === */
 .add-form-row {
-  background-color: var(--bg-main);
+  background-color: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 .add-form-row:hover {
-  border-color: #444;
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .remove-form-row-btn {
   transition: all 0.2s ease;
+  z-index: 10;
 }
 
 .remove-form-row-btn:hover {
-  transform: scale(1.1);
+  transform: scale(1.15) rotate(90deg);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.5);
 }
 
+/* === Image Upload === */
 .add-image-box {
   transition: all 0.2s ease;
-  min-height: 120px;
+  min-height: 140px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: rgba(30, 30, 35, 0.5);
+  border-radius: 0.75rem;
 }
 
 .add-image-box:hover {
-  border-color: var(--accent-red);
+  border-color: var(--accent-red) !important;
   background-color: rgba(239, 68, 68, 0.05);
+}
+
+.add-image-placeholder {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.add-image-box:hover .add-image-placeholder {
+  color: var(--accent-red);
+}
+
+/* === Product Images === */
+table tbody img {
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+table tbody tr:hover img {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* === Checkbox === */
+input[type="checkbox"] {
+  width: 1.125rem;
+  height: 1.125rem;
+  cursor: pointer;
+  accent-color: var(--accent-red);
+  transition: transform 0.2s ease;
+}
+
+input[type="checkbox"]:hover {
+  transform: scale(1.1);
+}
+
+/* === Scrollbar === */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 10px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: var(--bg-card);
+  border-radius: 5px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.5);
+  border-radius: 5px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.7);
+}
+
+/* === Modal Styles === */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-container {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.15));
+  border-radius: 0.75rem;
+  color: var(--accent-red);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.modal-close-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.modal-close-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--accent-red);
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: rgba(20, 20, 25, 0.4);
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.4);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.6);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-section.full-width {
+  grid-column: 1 / -1;
+}
+
+.section-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(239, 68, 68, 0.3);
+  margin-bottom: 0.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.required {
+  color: var(--accent-red);
+  margin-left: 0.25rem;
+}
+
+/* Hide number input arrows */
+.input-number::-webkit-outer-spin-button,
+.input-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-number[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Custom Dropdown Styles */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown-selected {
+  width: 100%;
+  border: 1.5px solid var(--border-color);
+  border-radius: 0.625rem;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  transition: all 0.2s ease;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdown-selected:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.dropdown-selected .placeholder {
+  color: var(--text-secondary);
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+
+.dropdown-arrow.open {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--accent-red);
+}
+
+.dropdown-selected:hover .dropdown-arrow {
+  color: var(--accent-red);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 0.625rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-main);
+}
+
+.dropdown-search svg {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.dropdown-search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.dropdown-search input::placeholder {
+  color: var(--text-secondary);
+}
+
+.dropdown-options {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.dropdown-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-options::-webkit-scrollbar-track {
+  background: rgba(20, 20, 25, 0.4);
+}
+
+.dropdown-options::-webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.5);
+  border-radius: 3px;
+}
+
+.dropdown-options::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.7);
+}
+
+.dropdown-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+}
+
+.dropdown-option:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.dropdown-option.selected {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+  color: var(--accent-red);
+  font-weight: 600;
+}
+
+.dropdown-option svg {
+  color: var(--accent-red);
+  flex-shrink: 0;
+}
+
+.dropdown-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Dropdown transition */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s ease;
+}
+
+.dropdown-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.625rem;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 0;
+  background: transparent;
+}
+
+.checkbox-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.checkbox-grid::-webkit-scrollbar-track {
+  background: rgba(20, 20, 25, 0.4);
+  border-radius: 3px;
+}
+
+.checkbox-grid::-webkit-scrollbar-thumb {
+  background: rgba(239, 68, 68, 0.5);
+  border-radius: 3px;
+}
+
+.checkbox-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.7);
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.checkbox-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.checkbox-item:hover {
+  background: rgba(30, 30, 35, 0.8);
+  border-color: rgba(239, 68, 68, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.checkbox-item:hover::before {
+  opacity: 1;
+}
+
+.checkbox-item:has(.checkbox-input:checked) {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.1));
+  border-color: var(--accent-red);
+  box-shadow: 0 2px 12px rgba(239, 68, 68, 0.2);
+}
+
+.checkbox-item:has(.checkbox-input:checked) .checkbox-label {
+  color: var(--accent-red);
+  font-weight: 600;
+}
+
+.checkbox-input {
+  width: 1.125rem;
+  height: 1.125rem;
+  cursor: pointer;
+  accent-color: var(--accent-red);
+  position: relative;
+  z-index: 1;
+  transition: transform 0.2s ease;
+}
+
+.checkbox-input:hover {
+  transform: scale(1.1);
+}
+
+.checkbox-label {
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.image-upload-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Product Preview Card - Matches Frontend Style */
+.product-preview-card {
+  position: relative;
+  max-width: 300px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.product-preview-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+  border-color: #555;
+}
+
+.product-preview-wrapper {
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+
+.product-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  background-color: var(--bg-card);
+}
+
+.product-preview-card:hover .product-preview-image {
+  transform: scale(1.05);
+}
+
+.product-preview-info {
+  padding: 1rem;
+}
+
+.product-preview-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.product-preview-card:hover .product-preview-title {
+  color: white;
+}
+
+.product-preview-price {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.image-remove-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(220, 38, 38, 0.95);
+  border: none;
+  border-radius: 0.375rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.image-remove-btn:hover {
+  background: rgba(220, 38, 38, 1);
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 0.75rem;
+  background: rgba(20, 20, 25, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-placeholder:hover {
+  border-color: var(--accent-red);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.upload-icon {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.upload-placeholder:hover .upload-icon {
+  color: var(--accent-red);
+  transform: scale(1.1);
+}
+
+.upload-text {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.upload-hint {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 20, 25, 0.5);
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .page-header {
+    padding: 1rem;
+  }
+  
+  .stat-card-inline {
+    padding: 0.5rem 0.875rem;
+    height: auto;
+  }
+  
+  .stat-icon-small {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .btn-compact {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+  
+  .modal-container {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 1rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
