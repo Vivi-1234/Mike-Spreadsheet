@@ -649,21 +649,21 @@
                     class="table-dropdown-menu"
                   >
                     <div class="table-dropdown-options">
-                      <div 
+                      <label 
                         v-for="cat in categories" 
                         :key="cat.link_text"
                         class="table-dropdown-option"
                         :class="{ 'selected': isInList(product.category, cat.link_text) }"
-                        @click="updateMultiSelect(product.id, 'category', cat.link_text, !isInList(product.category, cat.link_text))"
+                        @click.stop="updateMultiSelect(product.id, 'category', cat.link_text, !isInList(product.category, cat.link_text))"
                       >
                         <input 
                           type="checkbox" 
                           :checked="isInList(product.category, cat.link_text)"
                           class="table-dropdown-checkbox"
-                          @click.stop
+                          style="pointer-events: none;"
                         >
                         <span>{{ cat.link_text }}</span>
-                      </div>
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -684,21 +684,21 @@
                     class="table-dropdown-menu"
                   >
                     <div class="table-dropdown-options">
-                      <div 
+                      <label 
                         v-for="tag in tags" 
                         :key="tag.name"
                         class="table-dropdown-option"
                         :class="{ 'selected': isInList(product.tags, tag.name) }"
-                        @click="updateMultiSelect(product.id, 'tags', tag.name, !isInList(product.tags, tag.name))"
+                        @click.stop="updateMultiSelect(product.id, 'tags', tag.name, !isInList(product.tags, tag.name))"
                       >
                         <input 
                           type="checkbox" 
                           :checked="isInList(product.tags, tag.name)"
                           class="table-dropdown-checkbox"
-                          @click.stop
+                          style="pointer-events: none;"
                         >
                         <span>{{ tag.name }}</span>
-                      </div>
+                      </label>
                     </div>
                   </div>
                 </div>
